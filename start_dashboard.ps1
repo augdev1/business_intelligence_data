@@ -22,15 +22,10 @@ Write-Host ''
 
 # 2. Verificar se PostgreSQL está rodando
 Write-Host '[2/5] Verificando PostgreSQL...' -ForegroundColor Yellow
-$dockerRunning = docker ps 2>$null | Select-String 'vendas_db'
-if ($dockerRunning) {
-    Write-Host '✓ PostgreSQL Docker container está rodando' -ForegroundColor Green
-} else {
-    Write-Host 'Iniciando PostgreSQL via Docker...' -ForegroundColor Green
-    docker-compose -f docker/docker-compose.yml up -d db
-    Write-Host 'Aguardando PostgreSQL iniciar...' -ForegroundColor Yellow
-    Start-Sleep -Seconds 10
-}
+Write-Host '⚠️  Certifique-se de que o PostgreSQL está rodando localmente' -ForegroundColor Yellow
+Write-Host '   Porta: 5432' -ForegroundColor Yellow
+Write-Host '   Banco: olist_db' -ForegroundColor Yellow
+Write-Host '   Usuário: postgres' -ForegroundColor Yellow
 Write-Host ''
 
 # 3. Carregar dataset Olist
@@ -69,7 +64,6 @@ Write-Host ''
 Write-Host 'Para parar o sistema:' -ForegroundColor Yellow
 Write-Host '1. Pressione Ctrl+C neste terminal para parar o frontend' -ForegroundColor White
 Write-Host '2. Execute: Stop-Job -Id $backendJob.Id para parar o backend' -ForegroundColor White
-Write-Host '3. Execute: docker-compose -f docker/docker-compose.yml down para parar o PostgreSQL' -ForegroundColor White
 Write-Host ''
 
 # Iniciar frontend em foreground

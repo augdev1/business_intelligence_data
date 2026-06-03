@@ -38,8 +38,7 @@ d:\dados_aug/
 ### Pré-requisitos
 
 - Python 3.14.5
-- PostgreSQL 14+
-- Docker e Docker Compose (opcional)
+- PostgreSQL 14+ (instalado localmente)
 
 ### Passos
 
@@ -48,16 +47,25 @@ d:\dados_aug/
 3. Ative o ambiente: `venv\Scripts\activate` (Windows) ou `source venv/bin/activate` (Linux/Mac)
 4. Instale as dependências: `pip install -r requirements.txt`
 5. Configure as variáveis de ambiente: `cp .env.example .env` e edite o arquivo
-6. Inicie o PostgreSQL: `docker-compose up -d db` (ou use PostgreSQL local)
+6. Inicie o PostgreSQL localmente e crie o banco de dados `olist_db`
 7. Carregue o dataset Olist: `python scripts/carregar_olist.py`
 8. Inicie o backend: `uvicorn backend.api.main:app --reload --host 0.0.0.0 --port 8000`
 9. Inicie o frontend: `streamlit run frontend/app.py`
 
-## Uso com Docker
+## Uso com Script de Automação
 
-```bash
-docker-compose up -d
+Para facilitar a inicialização, use o script de automação:
+
+**Windows:**
+```powershell
+.\start_dashboard.ps1
 ```
+
+Este script automatiza:
+- Configuração do .env
+- Verificação do PostgreSQL
+- Carregamento do dataset Olist
+- Inicialização do backend e frontend
 
 Acesse:
 - Frontend: http://localhost:8501
