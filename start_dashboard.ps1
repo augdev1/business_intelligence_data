@@ -69,7 +69,7 @@ Write-Host ""
 Write-Host "Para parar o sistema:" -ForegroundColor Yellow
 Write-Host "1. Pressione Ctrl+C neste terminal para parar o frontend" -ForegroundColor White
 Write-Host "2. Execute: Stop-Job -Id $backendJob.Id para parar o backend" -ForegroundColor White
-Write-Host "3. Execute: docker-compose -f docker/docker-compose.yml down para parar o PostgreSQL" -ForegroundColor White
+Write-Host '3. Execute: docker-compose -f docker/docker-compose.yml down para parar o PostgreSQL' -ForegroundColor White
 Write-Host ""
 
 # Iniciar frontend em foreground
