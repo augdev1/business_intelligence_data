@@ -217,30 +217,37 @@ python scripts/carregar_olist.py
 Este script automatiza todo o pipeline ETL e exibe estatísticas detalhadas ao final.
 
 ## 🎨 Dashboard Interativo
-
 O dashboard Streamlit implementa um **design SaaS moderno** com tema escuro elegante, inspirado em produtos como Stripe, Linear e Vercel.
 
 ### 4 Páginas Analíticas
 
-#### 1. Visão Executiva
+## 1. Visão Executiva
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/eb0f1e19-c7b5-4cff-82e3-1689d154640e" />
+
 - **4 KPIs principais** em cards: Receita Total, Pedidos, Clientes Únicos, Ticket Médio
 - **Gráfico de linha:** Evolução mensal da receita
 - **Gráfico de barra:** Receita por estado (heatmap)
 - **Gráfico de área:** Evolução temporal com preenchimento
 
-#### 2. Análise de Produtos
+## 2. Análise de Produtos
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/60df6971-30fb-4860-978d-e15904009b03" />
+
 - **Top 10 Produtos** por faturamento (gráfico horizontal)
 - **Top 10 Categorias** por faturamento (gráfico horizontal)
 - **Gráfico de pizza:** Distribuição de receita por categoria
 - **Gráfico de barra:** Quantidade vendida por categoria
 
-#### 3. Clientes e Geografia
+## 3. Clientes e Geografia
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/fc157b3c-bd90-4d5f-8966-3602c4fd406c" />
+
 - **Distribuição por estado:** Pedidos por estado (gráfico de barra)
 - **Receita por estado:** Faturamento geográfico (gráfico de barra)
 - **KPIs de clientes:** Clientes únicos, pedidos por cliente
 - **Gráfico de pizza:** Distribuição por método de pagamento
 
-#### 4. Assistente IA
+## 4. Assistente IA
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/eb1aea31-074d-48b9-aca8-d37d5cc73885" />
+
 - **Chat interface** para consultas em linguagem natural
 - **Histórico de conversas** mantido na sessão
 - **Exibição do SQL gerado** (expansível)
@@ -518,10 +525,6 @@ API_URL=http://localhost:8000
 - **IA:** O assistente usa Groq API com modelo llama-3.3-70b-versatile para alta performance e baixo custo
 - **Arquitetura:** O sistema segue princípios SOLID e padrões de projeto profissionais (Repository, Service, DTO)
 
-## 📄 Licença
-
-MIT License - Consulte o arquivo LICENSE para detalhes
 
 ---
 
-**Desenvolvido com Python, FastAPI, PostgreSQL, LangChain e Streamlit**
