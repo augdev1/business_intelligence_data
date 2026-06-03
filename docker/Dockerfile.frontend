@@ -1,0 +1,16 @@
+FROM python:3.14.5-slim
+
+WORKDIR /app
+
+# Copia requirements e instala dependências Python
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copia código do frontend
+COPY frontend/ ./frontend/
+
+# Expõe porta
+EXPOSE 8501
+
+# Comando para rodar o Streamlit
+CMD ["streamlit", "run", "frontend/app.py", "--server.address=0.0.0.0", "--server.port=8501"]

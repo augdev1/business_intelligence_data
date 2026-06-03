@@ -1,0 +1,18 @@
+[project]
+name = "projeto-analise-vendas"
+version = "1.0.0"
+description = "Sistema Inteligente de Análise de Vendas"
+requires-python = ">=3.12"
+authors = [
+    {name = "Development Team"}
+]
+
+[tool.black]
+line-length = 100
+target-version = ['py312']
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
