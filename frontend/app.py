@@ -266,12 +266,11 @@ elif pagina == "Produtos":
                     color_continuous_scale='Plasma'
                 )
                 fig.update_layout(
-                    yaxis={'categoryorder': 'total ascending'},
+                    yaxis={'categoryorder': 'total ascending', 'gridcolor': '#2d3748'},
                     paper_bgcolor='rgba(0,0,0,0)',
                     plot_bgcolor='rgba(0,0,0,0)',
                     font=dict(color='#ffffff'),
-                    xaxis=dict(gridcolor='#2d3748'),
-                    yaxis=dict(gridcolor='#2d3748')
+                    xaxis=dict(gridcolor='#2d3748')
                 )
                 st.plotly_chart(fig, use_container_width=True)
             else:
@@ -291,12 +290,11 @@ elif pagina == "Produtos":
                     color_continuous_scale='Cividis'
                 )
                 fig.update_layout(
-                    yaxis={'categoryorder': 'total ascending'},
+                    yaxis={'categoryorder': 'total ascending', 'gridcolor': '#2d3748'},
                     paper_bgcolor='rgba(0,0,0,0)',
                     plot_bgcolor='rgba(0,0,0,0)',
                     font=dict(color='#ffffff'),
-                    xaxis=dict(gridcolor='#2d3748'),
-                    yaxis=dict(gridcolor='#2d3748')
+                    xaxis=dict(gridcolor='#2d3748')
                 )
                 st.plotly_chart(fig, use_container_width=True)
             else:

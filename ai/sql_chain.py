@@ -8,16 +8,11 @@ from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
-from langchain.cache import InMemoryCache
-from langchain.globals import set_llm_cache
 import os
 import logging
 import re
 
 logger = logging.getLogger(__name__)
-
-# Configura cache em memória para otimizar performance
-set_llm_cache(InMemoryCache())
 
 
 class SQLChain:

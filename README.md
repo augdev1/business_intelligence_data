@@ -1,62 +1,383 @@
 # Sistema Inteligente de Análise Olist E-Commerce
 
-Sistema profissional para análise de e-commerce brasileiro com dataset real Olist, processamento ETL, dashboards interativos modernos e consultas em linguagem natural via IA.
+Sistema profissional de Business Intelligence e Análise de Dados implementando pipeline ETL completo, dashboard interativo moderno e assistente de IA para consultas em linguagem natural sobre dataset real de e-commerce brasileiro.
 
-## Tecnologias
+## 🎯 Visão Geral
 
-- **Backend:** Python 3.14.5, FastAPI
-- **Banco de Dados:** PostgreSQL
-- **Dataset:** Olist Brazilian E-Commerce (Kaggle)
-- **Processamento:** Pandas, SQLAlchemy
-- **IA:** LangChain (otimizado), Groq (llama-3.3-70b-versatile)
-- **Frontend:** Streamlit
-- **Visualização:** Plotly
-- **Containerização:** Docker (opcional)
+Este projeto demonstra competências avançadas em engenharia de dados, incluindo:
 
-## Estrutura do Projeto
+- **Pipeline ETL profissional** para processamento de dataset real (Olist Brazilian E-Commerce - 100k+ registros)
+- **Arquitetura em camadas** seguindo melhores práticas (Repository Pattern, Service Layer, DTO Pattern)
+- **Dashboard interativo** com design SaaS moderno e 4 páginas analíticas
+- **Assistente de IA** usando LangChain + Groq (llama-3.3-70b-versatile) para consultas em linguagem natural
+- **API REST** com FastAPI para exposição de KPIs e endpoints analíticos
+- **Banco de dados relacional** PostgreSQL com schema normalizado e índices otimizados
+
+## 🛠️ Stack Tecnológico
+
+### Backend & API
+- **Python 3.12+** - Linguagem principal
+- **FastAPI 0.115.0** - Framework API REST de alta performance
+- **SQLAlchemy 2.0.35** - ORM para mapeamento objeto-relacional
+- **Pydantic 2.9.2** - Validação de dados e schemas
+- **Uvicorn** - Servidor ASGI
+
+### Banco de Dados
+- **PostgreSQL 14+** - Banco de dados relacional
+- **psycopg2-binary** - Driver PostgreSQL para Python
+
+### Processamento de Dados
+- **Pandas 2.2.3** - Manipulação e análise de dados
+- **NumPy 2.1.3** - Computação numérica
+
+### Inteligência Artificial
+- **LangChain 0.3.7** - Framework para desenvolvimento com LLMs
+- **LangChain Groq 0.2.1** - Integração com Groq API
+- **llama-3.3-70b-versatile** - Modelo LLM de alta performance
+- **LCEL (LangChain Expression Language)** - Chains otimizadas para performance
+
+### Frontend & Visualização
+- **Streamlit 1.39.0** - Framework para dashboards interativos
+- **Plotly 5.24.1** - Gráficos interativos e visualizações
+
+### Testes & Qualidade
+- **pytest 8.3.3** - Framework de testes
+- **pytest-asyncio** - Suporte a testes assíncronos
+- **Black** - Formatação de código
+
+### DevOps
+- **Docker & Docker Compose** - Containerização (opcional)
+- **PowerShell Scripts** - Automação de setup
+
+## 📁 Estrutura do Projeto
 
 ```
 d:\dados_aug/
-├── data/              # Arquivos de dados
-│   └── raw/           # CSVs do dataset Olist
-├── backend/           # API FastAPI e lógica de negócio
-│   ├── models/        # Modelos SQLAlchemy Olist
-│   ├── repositories/  # Repositories de dados
-│   ├── services/      # Services de negócio
-│   └── api/           # Rotas FastAPI
-├── database/          # Configuração do banco
-├── etl/               # Pipeline ETL Olist
-├── ai/                # Assistente IA (LangChain + Groq)
-├── frontend/          # Dashboard Streamlit (Design SaaS)
-├── scripts/           # Scripts utilitários
-├── tests/             # Testes
-└── docs/              # Documentação
+├── data/
+│   ├── raw/                    # CSVs originais do dataset Olist (100k+ registros)
+│   │   ├── olist_customers_dataset.csv
+│   │   ├── olist_orders_dataset.csv
+│   │   ├── olist_order_items_dataset.csv
+│   │   ├── olist_products_dataset.csv
+│   │   └── olist_order_payments_dataset.csv
+│   └── processed/              # Dados processados
+├── backend/
+│   ├── api/                    # API FastAPI
+│   │   ├── main.py             # Aplicação principal
+│   │   ├── routes/             # Endpoints REST (kpi, ia)
+│   │   └── schemas/            # Schemas Pydantic
+│   ├── models/                 # Modelos SQLAlchemy (5 tabelas Olist)
+│   │   ├── customer.py
+│   │   ├── product.py
+│   │   ├── order.py
+│   │   ├── order_item.py
+│   │   └── order_payment.py
+│   ├── repositories/           # Repository Pattern (acesso a dados)
+│   │   ├── base.py
+│   │   ├── customer_repository.py
+│   │   └── kpi_repository.py
+│   └── services/               # Service Layer (lógica de negócio)
+│       ├── indicador_service.py
+│       └── ia_service.py
+├── database/
+│   └── connection.py           # Configuração PostgreSQL
+├── etl/                        # Pipeline ETL profissional
+│   ├── extract_olist.py        # Extração dos CSVs
+│   ├── transform_olist.py      # Transformação e validação
+│   └── load_olist.py           # Carga em batch no PostgreSQL
+├── ai/                         # Assistente IA com LangChain
+│   ├── sql_chain.py            # Chain SQL otimizado com LCEL
+│   └── prompts.py              # Templates de prompt
+├── frontend/
+│   └── app.py                  # Dashboard Streamlit (4 páginas)
+├── scripts/
+│   └── carregar_olist.py       # Script de carga do dataset
+├── tests/                      # Testes unitários e integração
+├── docs/                       # Documentação técnica detalhada
+│   ├── arquitetura.md          # Diagrama de arquitetura
+│   ├── dataset_olist_analysis.md  # Análise completa do schema
+│   ├── api_documentation.md    # Documentação da API
+│   └── auditoria_projeto.md    # Auditoria técnica
+├── docker/                     # Configuração Docker (opcional)
+├── requirements.txt            # Dependências Python
+├── pyproject.toml              # Configuração do projeto
+└── start_dashboard.ps1         # Script de automação (Windows)
 ```
 
-## Instalação Local
+## 🏗️ Arquitetura do Sistema
+
+O sistema implementa uma **arquitetura em camadas (layered architecture)** com separação clara de responsabilidades:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Frontend (Streamlit)                     │
+│              Dashboard Interativo - 4 Páginas               │
+└──────────────────────────┬──────────────────────────────────┘
+                           │ HTTP/REST
+┌──────────────────────────▼──────────────────────────────────┐
+│                   API Layer (FastAPI)                        │
+│              Endpoints e Validação de Requisições            │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+┌──────────────────────────▼──────────────────────────────────┐
+│              Business Logic Layer (Services)                 │
+│    Serviços de Domínio e Cálculo de Indicadores              │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+┌──────────────────────────▼──────────────────────────────────┐
+│              Data Access Layer (Repositories)                │
+│           Abstração de Acesso ao Banco de Dados              │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+┌──────────────────────────▼──────────────────────────────────┐
+│              ORM Layer (SQLAlchemy Models)                   │
+│               Mapeamento Objeto-Relacional                   │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+┌──────────────────────────▼──────────────────────────────────┐
+│                  PostgreSQL Database                         │
+│              5 Tabelas Relacionais (Schema Olist)            │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Padrões de Projeto Implementados
+
+- **Repository Pattern:** Abstração de acesso a dados
+- **Service Layer:** Separação de lógica de negócio
+- **DTO Pattern:** Schemas Pydantic para transferência de dados
+- **Dependency Injection:** Injeção de dependências via FastAPI
+
+## 📊 Dataset Olist Brazilian E-Commerce
+
+O sistema utiliza como fonte oficial de dados o dataset **Olist Brazilian E-Commerce** do Kaggle:
+
+**Fonte:** https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce  
+**Licença:** CC-BY-NC-SA-4.0  
+**Volume de Dados:** 100k+ registros distribuídos em 5 tabelas relacionais
+
+### Tabelas do Dataset
+
+| Tabela | Registros | Descrição |
+|--------|-----------|-----------|
+| `customers` | 99,441 | Dados demográficos dos clientes |
+| `orders` | 99,441 | Pedidos realizados com status e timestamps |
+| `order_items` | 112,650 | Itens de cada pedido (preço, frete) |
+| `products` | 32,951 | Catálogo de produtos com categorias |
+| `order_payments` | 103,886 | Pagamentos (tipo, parcelas, valor) |
+
+### Relacionamentos
+
+- **customers ↔ orders:** 1:N (um cliente, múltiplos pedidos)
+- **orders ↔ order_items:** 1:N (um pedido, múltiplos itens)
+- **orders ↔ order_payments:** 1:N (um pedido, múltiplos pagamentos)
+- **products ↔ order_items:** 1:N (um produto, múltiplos itens)
+
+### Schema do Banco PostgreSQL
+
+O banco de dados implementa o schema normalizado do Olist com:
+
+- **Chaves primárias (PK)** em todas as tabelas
+- **Chaves estrangeiras (FK)** para integridade referencial
+- **Índices** nas colunas frequentemente usadas em joins e filtros
+- **Constraints** para validação de dados
+
+Para análise completa do schema, ERD e KPIs definidos, consulte: **[docs/dataset_olist_analysis.md](docs/dataset_olist_analysis.md)**
+
+## 🔄 Pipeline ETL
+
+O sistema implementa um pipeline ETL profissional em 3 fases:
+
+### Extract (Extração)
+- Leitura dos 5 arquivos CSV principais do dataset Olist
+- Validação de schema (colunas e tipos de dados)
+- Detecção de arquivos ausentes ou corrompidos
+- Logging detalhado de cada etapa
+
+### Transform (Transformação)
+- Conversão de tipos (strings para datas, números, timestamps)
+- Tratamento de valores nulos e outliers
+- Normalização de categorias de produtos
+- Validação de integridade referencial
+- Cálculo de campos derivados (ex: total_order_value)
+
+### Load (Carga)
+- Inserção em lote (batch insert) para performance
+- Uso de transações para garantir atomicidade
+- Detecção e tratamento de duplicatas
+- Criação de índices após carga
+- Validação de integridade referencial
+- Relatório de estatísticas finais (carregados, duplicatas, erros)
+
+### Script de Carga
+
+```bash
+python scripts/carregar_olist.py
+```
+
+Este script automatiza todo o pipeline ETL e exibe estatísticas detalhadas ao final.
+
+## 🎨 Dashboard Interativo
+
+O dashboard Streamlit implementa um **design SaaS moderno** com tema escuro elegante, inspirado em produtos como Stripe, Linear e Vercel.
+
+### 4 Páginas Analíticas
+
+#### 1. Visão Executiva
+- **4 KPIs principais** em cards: Receita Total, Pedidos, Clientes Únicos, Ticket Médio
+- **Gráfico de linha:** Evolução mensal da receita
+- **Gráfico de barra:** Receita por estado (heatmap)
+- **Gráfico de área:** Evolução temporal com preenchimento
+
+#### 2. Análise de Produtos
+- **Top 10 Produtos** por faturamento (gráfico horizontal)
+- **Top 10 Categorias** por faturamento (gráfico horizontal)
+- **Gráfico de pizza:** Distribuição de receita por categoria
+- **Gráfico de barra:** Quantidade vendida por categoria
+
+#### 3. Clientes e Geografia
+- **Distribuição por estado:** Pedidos por estado (gráfico de barra)
+- **Receita por estado:** Faturamento geográfico (gráfico de barra)
+- **KPIs de clientes:** Clientes únicos, pedidos por cliente
+- **Gráfico de pizza:** Distribuição por método de pagamento
+
+#### 4. Assistente IA
+- **Chat interface** para consultas em linguagem natural
+- **Histórico de conversas** mantido na sessão
+- **Exibição do SQL gerado** (expansível)
+- **Exibição dos dados brutos** (expansível)
+- **Exemplos de perguntas** para orientação
+
+### Exemplos de Consultas via IA
+
+- "Qual estado gerou mais receita?"
+- "Qual categoria vendeu mais?"
+- "Qual produto teve maior faturamento?"
+- "Qual método de pagamento é mais utilizado?"
+- "Quantos pedidos ocorreram em janeiro?"
+
+### Tecnologias de Visualização
+
+- **Plotly Express:** Gráficos interativos com zoom, hover e filtros
+- **Plotly Graph Objects:** Gráficos customizados com controle total
+- **Custom CSS:** Tema escuro elegante com cores profissionais
+- **Layout responsivo:** Adaptação a diferentes tamanhos de tela
+
+## 🤖 Assistente de IA com LangChain
+
+O sistema implementa um assistente de dados usando **LangChain** e **Groq API** para consultas em linguagem natural.
+
+### Arquitetura da IA
+
+```
+Usuário (pergunta em linguagem natural)
+    ↓
+LangChain SQL Chain (LCEL otimizado)
+    ↓
+LLM (llama-3.3-70b-versatile)
+    ↓
+SQL gerado
+    ↓
+PostgreSQL (execução)
+    ↓
+Resultados
+    ↓
+LLM (formatação)
+    ↓
+Resposta em linguagem natural
+```
+
+### Otimizações Implementadas
+
+- **LCEL (LangChain Expression Language):** Chains modernas e eficientes
+- **Cache automático:** Evita chamadas repetidas ao LLM
+- **Prompts concisos:** Reduz consumo de tokens
+- **Timeout configurado:** 30 segundos para evitar travamentos
+- **max_tokens limitado:** 500 tokens para respostas rápidas
+- **Modelo otimizado:** llama-3.3-70b-versatile (alta performance)
+
+### Funcionalidades
+
+- Geração automática de SQL a partir de perguntas em português
+- Execução segura de queries no PostgreSQL
+- Formatação de resultados em linguagem natural
+- Exibição do SQL gerado para transparência
+- Exibição dos dados brutos para auditoria
+- Histórico de conversas na sessão
+
+## 📈 KPIs Calculados
+
+O sistema calcula automaticamente os seguintes indicadores de negócio:
+
+### KPIs Financeiros
+- **Receita Total:** Soma de todos os valores de pedidos (preço + frete)
+- **Ticket Médio:** Receita total / Número de pedidos
+- **Receita por Estado:** Distribuição geográfica de faturamento
+- **Receita por Mês:** Evolução temporal de receita
+
+### KPIs de Vendas
+- **Número de Pedidos:** Total de pedidos realizados
+- **Clientes Únicos:** Base de clientes distintos
+- **Pedidos por Cliente:** Média de pedidos por cliente
+
+### KPIs de Produtos
+- **Top 10 Produtos:** Ranking por faturamento
+- **Top 10 Categorias:** Ranking por faturamento
+- **Quantidade por Categoria:** Volume de vendas por categoria
+
+### KPIs de Pagamento
+- **Métodos de Pagamento:** Distribuição por tipo (credit_card, boleto, voucher, debit_card)
+- **Valor por Método:** Faturamento por tipo de pagamento
+
+### KPIs Geográficos
+- **Pedidos por Estado:** Distribuição de pedidos por UF
+- **Receita por Estado:** Faturamento por UF
+
+## 🚀 Instalação e Uso
 
 ### Pré-requisitos
 
-- Python 3.14.5
-- PostgreSQL 14+ (instalado localmente)
+- **Python 3.12+**
+- **PostgreSQL 14+** (instalado localmente)
+- **GROQ_API_KEY** (obtenha em https://groq.com)
 
-### Passos
+### Instalação Manual
 
-1. Clone o repositório
-2. Crie um ambiente virtual: `python -m venv venv`
-3. Ative o ambiente: `venv\Scripts\activate` (Windows) ou `source venv/bin/activate` (Linux/Mac)
-4. Instale as dependências: `pip install -r requirements.txt`
-5. Configure as variáveis de ambiente: `cp .env.example .env` e edite o arquivo
-6. Inicie o PostgreSQL localmente e crie o banco de dados `olist_db`
-7. Carregue o dataset Olist: `python scripts/carregar_olist.py`
-8. Inicie o backend: `uvicorn backend.api.main:app --reload --host 0.0.0.0 --port 8000`
-9. Inicie o frontend: `streamlit run frontend/app.py`
+```bash
+# 1. Clone o repositório
+git clone <repo-url>
+cd dados_aug
 
-## Uso com Script de Automação
+# 2. Crie ambiente virtual
+python -m venv venv
 
-Para facilitar a inicialização, use o script de automação:
+# 3. Ative o ambiente
+# Windows:
+venv\Scripts\activate
+# Linux/Mac:
+source venv/bin/activate
 
-**Windows:**
+# 4. Instale dependências
+pip install -r requirements.txt
+
+# 5. Configure variáveis de ambiente
+cp .env.example .env
+# Edite .env com suas credenciais PostgreSQL e GROQ_API_KEY
+
+# 6. Inicie PostgreSQL e crie banco de dados
+createdb olist_db
+
+# 7. Carregue o dataset Olist
+python scripts/carregar_olist.py
+
+# 8. Inicie o backend (terminal 1)
+uvicorn backend.api.main:app --reload --host 0.0.0.0 --port 8000
+
+# 9. Inicie o frontend (terminal 2)
+streamlit run frontend/app.py
+```
+
+### Instalação Automatizada (Windows)
+
 ```powershell
 .\start_dashboard.ps1
 ```
@@ -67,90 +388,140 @@ Este script automatiza:
 - Carregamento do dataset Olist
 - Inicialização do backend e frontend
 
-Acesse:
-- Frontend: http://localhost:8501
-- API: http://localhost:8000
-- API Docs: http://localhost:8000/docs
+### Acessos
 
-## Funcionalidades
+- **Frontend:** http://localhost:8501
+- **API:** http://localhost:8000
+- **Documentação API (Swagger):** http://localhost:8000/docs
+- **Documentação API (ReDoc):** http://localhost:8000/redoc
 
-- **Dataset Real:** Olist Brazilian E-Commerce (Kaggle)
-- **ETL Pipeline:** Extração, transformação e carga dos 5 CSVs Olist
-- **5 Tabelas Relacionadas:** customers, products, orders, order_items, order_payments
-- **10 KPIs Analíticos:** Receita, pedidos, clientes, ticket médio, rankings, etc.
-- **Dashboard SaaS Moderno:** 4 páginas com tema escuro elegante
-- **IA com Groq:** Consultas em linguagem natural usando llama-3.3-70b-versatile
+## 📚 Documentação Técnica
 
-## KPIs Calculados
+O projeto possui documentação técnica detalhada em `/docs`:
 
-- Receita Total
-- Número de Pedidos
-- Clientes Únicos
-- Ticket Médio
-- Receita por Estado
-- Receita por Mês
-- Top 10 Produtos
-- Top 10 Categorias
-- Métodos de Pagamento
-- Pedidos por Estado
+- **[docs/arquitetura.md](docs/arquitetura.md)** - Diagrama de arquitetura, camadas do sistema, padrões de projeto e fluxo de dados
+- **[docs/dataset_olist_analysis.md](docs/dataset_olist_analysis.md)** - Análise completa do schema Olist, ERD, relacionamentos, KPIs possíveis e design do banco PostgreSQL
+- **[docs/api_documentation.md](docs/api_documentation.md)** - Documentação completa da API REST com todos os endpoints, schemas e exemplos
+- **[docs/auditoria_projeto.md](docs/auditoria_projeto.md)** - Auditoria técnica do projeto, estrutura de arquivos, funcionalidades implementadas e plano de migração
 
-## Dataset Olist
+## ⚙️ Funcionalidades Principais
 
-O sistema utiliza como fonte oficial de dados o dataset **Olist Brazilian E-Commerce** do Kaggle:
+### Backend (FastAPI)
+- ✅ API REST com endpoints para KPIs e consultas analíticas
+- ✅ Validação de dados com Pydantic
+- ✅ Documentação automática (Swagger/ReDoc)
+- ✅ CORS configurado para integração com frontend
+- ✅ Health check endpoint
+- ✅ Repository Pattern para acesso a dados
+- ✅ Service Layer para lógica de negócio
 
-https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+### Pipeline ETL
+- ✅ Extração de 5 CSVs do dataset Olist
+- ✅ Transformação com validação de tipos e tratamento de nulos
+- ✅ Carga em batch no PostgreSQL (1000 registros por lote)
+- ✅ Detecção de duplicatas
+- ✅ Logging detalhado de cada etapa
+- ✅ Relatório de estatísticas finais
 
-### Arquivos CSV Utilizados
+### Banco de Dados
+- ✅ Schema normalizado com 5 tabelas relacionais
+- ✅ Chaves primárias e estrangeiras
+- ✅ Índices para performance
+- ✅ Constraints para integridade
+- ✅ Conexão via SQLAlchemy ORM
 
-- `olist_customers_dataset.csv` - Dados dos clientes (99,441 registros)
-- `olist_orders_dataset.csv` - Pedidos realizados (99,441 registros)
-- `olist_order_items_dataset.csv` - Itens de cada pedido (112,650 registros)
-- `olist_products_dataset.csv` - Catálogo de produtos (32,951 registros)
-- `olist_order_payments_dataset.csv` - Pagamentos dos pedidos (103,886 registros)
+### Inteligência Artificial
+- ✅ LangChain com LCEL otimizado
+- ✅ Integração com Groq API (llama-3.3-70b-versatile)
+- ✅ Geração de SQL a partir de linguagem natural
+- ✅ Execução segura de queries
+- ✅ Formatação de respostas em português
+- ✅ Cache automático para performance
 
-### Documentação Completa
+### Frontend (Streamlit)
+- ✅ Dashboard com 4 páginas analíticas
+- ✅ Design SaaS moderno com tema escuro
+- ✅ Gráficos interativos com Plotly
+- ✅ KPIs em cards com métricas principais
+- ✅ Chat interface para consultas via IA
+- ✅ Histórico de conversas
+- ✅ Exibição de SQL gerado e dados brutos
 
-Para análise detalhada do schema, chaves primárias/estrangeiras, diagrama ERD, KPIs definidos e arquitetura de dados, consulte:
+## 🧪 Testes
 
-**[docs/dataset_olist_analysis.md](docs/dataset_olist_analysis.md)**
-
-Para auditoria completa do projeto e migração, consulte:
-
-**[docs/auditoria_projeto.md](docs/auditoria_projeto.md)**
-
-Para relatório final da migração, consulte:
-
-**[docs/relatorio_final.md](docs/relatorio_final.md)**
-
-## Como Carregar o Dataset Olist
-
-Após configurar o PostgreSQL, execute o script de carga:
-
-```bash
-python scripts/carregar_olist.py
-```
-
-Este script irá:
-1. Criar as 5 tabelas no PostgreSQL
-2. Extrair os dados dos CSVs
-3. Transformar e validar os dados
-4. Carregar no banco em batch
-5. Exibir estatísticas finais
-
-## Desenvolvimento
-
-### Executar Testes
+O projeto inclui testes unitários e de integração:
 
 ```bash
+# Executar todos os testes
 pytest tests/
+
+# Executar com coverage
+pytest tests/ --cov=backend --cov=etl --cov=ai
+
+# Executar testes específicos
+pytest tests/unit/test_etl.py
+pytest tests/unit/test_services.py
 ```
 
-### Formatação de Código
+## 🎨 Formatação de Código
+
+O projeto usa Black para formatação consistente:
 
 ```bash
+# Formatar todo o código
 black backend/ etl/ ai/ frontend/ tests/
+
+# Verificar formatação sem modificar
+black --check backend/ etl/ ai/ frontend/ tests/
 ```
 
-## Licença
+## 🐳 Docker (Opcional)
 
-MIT
+O projeto pode ser containerizado com Docker:
+
+```bash
+# Construir e iniciar com Docker Compose
+cd docker
+docker-compose up --build
+
+# Acessar serviços
+# Frontend: http://localhost:8501
+# API: http://localhost:8000
+# PostgreSQL: localhost:5432
+```
+
+## 🔧 Variáveis de Ambiente
+
+Configure as seguintes variáveis no arquivo `.env`:
+
+```env
+# PostgreSQL
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=olist_db
+DB_USER=postgres
+DB_PASSWORD=your_password
+
+# IA (Groq)
+AI_PROVIDER=groq
+GROQ_API_KEY=your_groq_api_key
+
+# API
+API_URL=http://localhost:8000
+```
+
+## 📝 Notas Importantes
+
+- **Dataset Real:** O sistema utiliza o dataset Olist Brazilian E-Commerce do Kaggle, que contém dados reais de e-commerce brasileiro
+- **Volume de Dados:** 100k+ registros distribuídos em 5 tabelas relacionais
+- **Performance:** O pipeline ETL usa batch insert (1000 registros) para performance otimizada
+- **IA:** O assistente usa Groq API com modelo llama-3.3-70b-versatile para alta performance e baixo custo
+- **Arquitetura:** O sistema segue princípios SOLID e padrões de projeto profissionais (Repository, Service, DTO)
+
+## 📄 Licença
+
+MIT License - Consulte o arquivo LICENSE para detalhes
+
+---
+
+**Desenvolvido com Python, FastAPI, PostgreSQL, LangChain e Streamlit**

@@ -3,7 +3,7 @@ Repository para consultas analíticas e KPIs do dataset Olist.
 """
 from typing import List, Dict, Any
 from sqlalchemy.orm import Session
-from sqlalchemy import func, desc, and_, extract
+from sqlalchemy import func, desc, and_, extract, text
 from decimal import Decimal
 from datetime import date
 
@@ -255,6 +255,6 @@ class KPIRepository:
         Returns:
             Lista de dicionários com os resultados
         """
-        result = self.db.execute(query)
+        result = self.db.execute(text(query))
         columns = result.keys()
         return [dict(zip(columns, row)) for row in result.fetchall()]

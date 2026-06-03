@@ -13,8 +13,9 @@ load_dotenv()
 # URL do banco de dados
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost:5432/olist_db")
 
-# Engine do SQLAlchemy
-engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+# Engine do SQLAlchemy usando pg8000 (para evitar problemas de codificação com psycopg2)
+DATABASE_URL_PG8000 = DATABASE_URL.replace("postgresql://", "postgresql+pg8000://")
+engine = create_engine(DATABASE_URL_PG8000, pool_pre_ping=True)
 
 # Session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

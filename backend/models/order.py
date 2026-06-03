@@ -1,7 +1,7 @@
 """
 Modelo SQLAlchemy para a tabela orders do dataset Olist.
 """
-from sqlalchemy import Column, String, DateTime, Date
+from sqlalchemy import Column, String, DateTime, Date, ForeignKey
 from sqlalchemy.orm import relationship
 from database.connection import Base
 
@@ -25,7 +25,7 @@ class Order(Base):
     __tablename__ = "orders"
     
     order_id = Column(String(50), primary_key=True, index=True)
-    customer_id = Column(String(50), nullable=False, index=True)
+    customer_id = Column(String(50), ForeignKey("customers.customer_id"), nullable=False, index=True)
     order_status = Column(String(20), nullable=False, index=True)
     order_purchase_timestamp = Column(DateTime, nullable=False, index=True)
     order_approved_at = Column(DateTime)
