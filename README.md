@@ -222,7 +222,8 @@ O dashboard Streamlit implementa um **design SaaS moderno** com tema escuro eleg
 ### 4 Páginas Analíticas
 
 ## 1. Visão Executiva
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/eb0f1e19-c7b5-4cff-82e3-1689d154640e" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/71dffe4c-5695-4ba9-8e37-4ba6ff92e0d1" />
+
 
 - **4 KPIs principais** em cards: Receita Total, Pedidos, Clientes Únicos, Ticket Médio
 - **Gráfico de linha:** Evolução mensal da receita
@@ -230,7 +231,8 @@ O dashboard Streamlit implementa um **design SaaS moderno** com tema escuro eleg
 - **Gráfico de área:** Evolução temporal com preenchimento
 
 ## 2. Análise de Produtos
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/60df6971-30fb-4860-978d-e15904009b03" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e5ecf4cd-1b59-4944-a778-f387667b2184" />
+
 
 - **Top 10 Produtos** por faturamento (gráfico horizontal)
 - **Top 10 Categorias** por faturamento (gráfico horizontal)
@@ -238,7 +240,8 @@ O dashboard Streamlit implementa um **design SaaS moderno** com tema escuro eleg
 - **Gráfico de barra:** Quantidade vendida por categoria
 
 ## 3. Clientes e Geografia
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/fc157b3c-bd90-4d5f-8966-3602c4fd406c" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/416e834b-81d7-46c4-9714-6277adebd2cf" />
+
 
 - **Distribuição por estado:** Pedidos por estado (gráfico de barra)
 - **Receita por estado:** Faturamento geográfico (gráfico de barra)
@@ -246,7 +249,8 @@ O dashboard Streamlit implementa um **design SaaS moderno** com tema escuro eleg
 - **Gráfico de pizza:** Distribuição por método de pagamento
 
 ## 4. Assistente IA
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/eb1aea31-074d-48b9-aca8-d37d5cc73885" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/96ef8730-3fd9-4675-8fc9-9419c3172352" />
+
 
 - **Chat interface** para consultas em linguagem natural
 - **Histórico de conversas** mantido na sessão
