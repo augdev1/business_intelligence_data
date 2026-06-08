@@ -144,7 +144,8 @@ def standardize_text(df: pd.DataFrame) -> pd.DataFrame:
     df['produto'] = df['produto'].str.strip()
     df['categoria'] = df['categoria'].str.strip()
     df['cidade'] = df['cidade'].str.strip()
-    df['id_venda'] = df['id_venda'].str.strip()
+    if 'id_venda' in df.columns:
+        df['id_venda'] = df['id_venda'].str.strip()
     
     # Converte para title case (primeira letra maiúscula)
     df['produto'] = df['produto'].str.title()

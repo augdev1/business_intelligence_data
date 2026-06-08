@@ -37,8 +37,14 @@ Este projeto demonstra competências avançadas em engenharia de dados, incluind
 - **LCEL (LangChain Expression Language)** - Chains otimizadas para performance
 
 ### Frontend & Visualização
-- **Streamlit 1.39.0** - Framework para dashboards interativos
-- **Plotly 5.24.1** - Gráficos interativos e visualizações
+- **React 18** - Framework de UI
+- **Vite** - Build tool e dev server (porta 3000)
+- **TypeScript** - Tipagem estática
+- **Tailwind CSS v4** - Estilização utility-first
+- **Recharts** - Gráficos interativos e responsivos
+- **Framer Motion** - Animações fluidas
+- **Lucide React** - Ícones
+- **React Router v6** - Roteamento SPA
 
 ### Testes & Qualidade
 - **pytest 8.3.3** - Framework de testes
@@ -46,7 +52,6 @@ Este projeto demonstra competências avançadas em engenharia de dados, incluind
 - **Black** - Formatação de código
 
 ### DevOps
-- **Docker & Docker Compose** - Containerização (opcional)
 - **PowerShell Scripts** - Automação de setup
 
 ## 📁 Estrutura do Projeto
@@ -89,9 +94,19 @@ d:\dados_aug/
 │   ├── sql_chain.py            # Chain SQL otimizado com LCEL
 │   └── prompts.py              # Templates de prompt
 ├── frontend/
-│   └── app.py                  # Dashboard Streamlit (4 páginas)
+│   └── app.py                  # Dashboard Streamlit (legado)
+├── frontend-react/             # Dashboard React + Vite + TypeScript
+│   ├── src/
+│   │   ├── pages/              # Visão Executiva, Produtos, Clientes, Assistente IA
+│   │   ├── components/         # Sidebar, ChartCard, GradientSelector
+│   │   ├── context/            # ThemeContext (dark/light)
+│   │   ├── hooks/              # useKPIs
+│   │   └── lib/                # api.ts, utils.ts
+│   ├── vite.config.ts
+│   └── package.json
 ├── scripts/
-│   └── carregar_olist.py       # Script de carga do dataset
+│   ├── carregar_olist.py       # Script de carga original
+│   └── carregar_rapido.py      # Carga rápida via bulk insert (ON CONFLICT DO NOTHING)
 ├── tests/                      # Testes unitários e integração
 ├── docs/                       # Documentação técnica detalhada
 │   ├── arquitetura.md          # Diagrama de arquitetura
@@ -110,8 +125,8 @@ O sistema implementa uma **arquitetura em camadas (layered architecture)** com s
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Frontend (Streamlit)                     │
-│              Dashboard Interativo - 4 Páginas               │
+│              Frontend (React + Vite + TypeScript)           │
+│         Dashboard SPA - 4 Páginas · localhost:3000          │
 └──────────────────────────┬──────────────────────────────────┘
                            │ HTTP/REST
 ┌──────────────────────────▼──────────────────────────────────┐
@@ -201,23 +216,30 @@ O sistema implementa um pipeline ETL profissional em 3 fases:
 - Cálculo de campos derivados (ex: total_order_value)
 
 ### Load (Carga)
-- Inserção em lote (batch insert) para performance
-- Uso de transações para garantir atomicidade
-- Detecção e tratamento de duplicatas
-- Criação de índices após carga
-- Validação de integridade referencial
-- Relatório de estatísticas finais (carregados, duplicatas, erros)
+- Bulk insert via `INSERT ... ON CONFLICT DO NOTHING` (PostgreSQL nativo)
+- Processamento em chunks de 5.000 registros para performance
+- Conversão automática de valores `NaT`/`NaN` para `NULL`
+- Relatório de estatísticas finais (inseridos por tabela)
 
 ### Script de Carga
 
 ```bash
-python scripts/carregar_olist.py
+python scripts/carregar_rapido.py
 ```
 
-Este script automatiza todo o pipeline ETL e exibe estatísticas detalhadas ao final.
+Carrega o dataset completo (~315k registros) em segundos usando bulk inserts com conflito ignorado automaticamente.
 
 ## 🎨 Dashboard Interativo
-O dashboard Streamlit implementa um **design SaaS moderno** com tema escuro elegante, inspirado em produtos como Stripe, Linear e Vercel.
+
+O dashboard React implementa um **design SaaS moderno** com tema escuro/claro, sidebar fixa no estilo Vision UI e glassmorphism.
+
+### Sidebar
+
+- Fixa, sempre visível, inspirada em Vision UI Dashboard
+- Ícones com gradientes distintos por seção
+- Card de usuário com indicador de status online
+- Card "Precisa de ajuda?" com atalho direto ao Assistente IA
+- Toggle dark/light mode
 
 ### 4 Páginas Analíticas
 
@@ -226,36 +248,34 @@ O dashboard Streamlit implementa um **design SaaS moderno** com tema escuro eleg
 
 
 - **4 KPIs principais** em cards: Receita Total, Pedidos, Clientes Únicos, Ticket Médio
-- **Gráfico de linha:** Evolução mensal da receita
-- **Gráfico de barra:** Receita por estado (heatmap)
-- **Gráfico de área:** Evolução temporal com preenchimento
+- **Gráfico de área:** Evolução mensal da receita
+- **Gráfico de barra:** Receita por estado
+- Filtro de período interativo
 
 ## 2. Análise de Produtos
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e5ecf4cd-1b59-4944-a778-f387667b2184" />
 
 
-- **Top 10 Produtos** por faturamento (gráfico horizontal)
-- **Top 10 Categorias** por faturamento (gráfico horizontal)
+- **Top N Produtos** por faturamento com nome legível (categoria + ID curto)
+- **Top N Categorias** por faturamento (gráfico horizontal)
 - **Gráfico de pizza:** Distribuição de receita por categoria
-- **Gráfico de barra:** Quantidade vendida por categoria
+- **Gráfico de barra:** Volume por categoria
+- Slider para ajustar N (5 a 20)
 
 ## 3. Clientes e Geografia
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/416e834b-81d7-46c4-9714-6277adebd2cf" />
 
 
-- **Distribuição por estado:** Pedidos por estado (gráfico de barra)
-- **Receita por estado:** Faturamento geográfico (gráfico de barra)
-- **KPIs de clientes:** Clientes únicos, pedidos por cliente
+- **Distribuição por estado:** Pedidos e receita por UF
 - **Gráfico de pizza:** Distribuição por método de pagamento
+- Seletor multiestado para filtro geográfico
 
 ## 4. Assistente IA
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/96ef8730-3fd9-4675-8fc9-9419c3172352" />
 
 
 - **Chat interface** para consultas em linguagem natural
-- **Histórico de conversas** mantido na sessão
-- **Exibição do SQL gerado** (expansível)
-- **Exibição dos dados brutos** (expansível)
+- **Exibição do SQL gerado** e dados brutos retornados
 - **Exemplos de perguntas** para orientação
 
 ### Exemplos de Consultas via IA
@@ -268,10 +288,10 @@ O dashboard Streamlit implementa um **design SaaS moderno** com tema escuro eleg
 
 ### Tecnologias de Visualização
 
-- **Plotly Express:** Gráficos interativos com zoom, hover e filtros
-- **Plotly Graph Objects:** Gráficos customizados com controle total
-- **Custom CSS:** Tema escuro elegante com cores profissionais
-- **Layout responsivo:** Adaptação a diferentes tamanhos de tela
+- **Recharts:** Gráficos responsivos (AreaChart, BarChart, PieChart)
+- **Framer Motion:** Animações e transições
+- **Tailwind CSS v4:** Estilização utility-first com tema customizado
+- **CSS custom properties:** Suporte a dark/light mode
 
 ## 🤖 Assistente de IA com LangChain
 
@@ -378,13 +398,17 @@ cp .env.example .env
 createdb olist_db
 
 # 7. Carregue o dataset Olist
-python scripts/carregar_olist.py
+python scripts/carregar_rapido.py
 
 # 8. Inicie o backend (terminal 1)
 uvicorn backend.api.main:app --reload --host 0.0.0.0 --port 8000
 
-# 9. Inicie o frontend (terminal 2)
-streamlit run frontend/app.py
+# 9. Instale dependências do frontend React (terminal 2)
+cd frontend-react
+npm install
+
+# 10. Inicie o frontend React
+npm run dev
 ```
 
 ### Instalação Automatizada (Windows)
@@ -393,15 +417,9 @@ streamlit run frontend/app.py
 .\start_dashboard.ps1
 ```
 
-Este script automatiza:
-- Configuração do .env
-- Verificação do PostgreSQL
-- Carregamento do dataset Olist
-- Inicialização do backend e frontend
-
 ### Acessos
 
-- **Frontend:** http://localhost:8501
+- **Frontend React:** http://localhost:3000
 - **API:** http://localhost:8000
 - **Documentação API (Swagger):** http://localhost:8000/docs
 - **Documentação API (ReDoc):** http://localhost:8000/redoc
@@ -429,10 +447,9 @@ O projeto possui documentação técnica detalhada em `/docs`:
 ### Pipeline ETL
 - ✅ Extração de 5 CSVs do dataset Olist
 - ✅ Transformação com validação de tipos e tratamento de nulos
-- ✅ Carga em batch no PostgreSQL (1000 registros por lote)
-- ✅ Detecção de duplicatas
-- ✅ Logging detalhado de cada etapa
-- ✅ Relatório de estatísticas finais
+- ✅ Carga rápida via bulk insert com `ON CONFLICT DO NOTHING`
+- ✅ Conversão automática de NaT/NaN para NULL
+- ✅ Relatório de estatísticas finais por tabela
 
 ### Banco de Dados
 - ✅ Schema normalizado com 5 tabelas relacionais
@@ -449,14 +466,16 @@ O projeto possui documentação técnica detalhada em `/docs`:
 - ✅ Formatação de respostas em português
 - ✅ Cache automático para performance
 
-### Frontend (Streamlit)
-- ✅ Dashboard com 4 páginas analíticas
-- ✅ Design SaaS moderno com tema escuro
-- ✅ Gráficos interativos com Plotly
+### Frontend (React + Vite + TypeScript)
+- ✅ SPA com React Router v6 e 4 páginas analíticas
+- ✅ Design Vision UI com sidebar fixa e glassmorphism
+- ✅ Dark/light mode com toggle
+- ✅ Gráficos interativos com Recharts
 - ✅ KPIs em cards com métricas principais
+- ✅ Animações com Framer Motion
 - ✅ Chat interface para consultas via IA
-- ✅ Histórico de conversas
 - ✅ Exibição de SQL gerado e dados brutos
+- ✅ Top produtos com nome legível (categoria + ID curto)
 
 ## 🧪 Testes
 
@@ -476,29 +495,14 @@ pytest tests/unit/test_services.py
 
 ## 🎨 Formatação de Código
 
-O projeto usa Black para formatação consistente:
+O projeto usa Black para formatação consistente do Python:
 
 ```bash
 # Formatar todo o código
-black backend/ etl/ ai/ frontend/ tests/
+black backend/ etl/ ai/ tests/
 
 # Verificar formatação sem modificar
-black --check backend/ etl/ ai/ frontend/ tests/
-```
-
-## 🐳 Docker (Opcional)
-
-O projeto pode ser containerizado com Docker:
-
-```bash
-# Construir e iniciar com Docker Compose
-cd docker
-docker-compose up --build
-
-# Acessar serviços
-# Frontend: http://localhost:8501
-# API: http://localhost:8000
-# PostgreSQL: localhost:5432
+black --check backend/ etl/ ai/ tests/
 ```
 
 ## 🔧 Variáveis de Ambiente
@@ -532,3 +536,4 @@ API_URL=http://localhost:8000
 
 ---
 
+**Desenvolvido com Python, FastAPI, PostgreSQL, LangChain, React e Vite**

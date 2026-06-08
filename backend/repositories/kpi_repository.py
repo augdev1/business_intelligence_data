@@ -151,6 +151,7 @@ class KPIRepository:
         return [
             {
                 'product_id': r[0],
+                'nome': f"{r[1] or 'sem_categoria'} #{r[0][:6]}",
                 'categoria': r[1],
                 'faturamento': r[2],
                 'receita_total': r[3],
