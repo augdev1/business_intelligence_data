@@ -1,6 +1,7 @@
 """
 Prompt templates para o assistente IA.
 """
+
 from langchain.prompts import PromptTemplate, FewShotPromptTemplate
 
 # Template para geração de SQL - Dataset Olist
@@ -63,12 +64,8 @@ Resposta:
 """
 
 # Cria os prompts
-sql_prompt = PromptTemplate(
-    input_variables=["pergunta"],
-    template=SQL_TEMPLATE
-)
+sql_prompt = PromptTemplate(input_variables=["pergunta"], template=SQL_TEMPLATE)
 
 response_prompt = PromptTemplate(
-    input_variables=["pergunta", "sql", "resultados"],
-    template=RESPONSE_TEMPLATE
+    input_variables=["pergunta", "sql", "resultados"], template=RESPONSE_TEMPLATE
 )

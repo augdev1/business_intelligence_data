@@ -1,34 +1,37 @@
 """
-Configuração de conexão com o banco de dados PostgreSQL.
+Configuração de conexão com o banco de dados PostgreSQL / SQLite.
 Dataset Olist Brazilian E-Commerce.
 """
+
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# URL do banco de dados
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost:5432/olist_db")
+# URL padrão do banco de dados
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://vendas_user:vendas_password@localhost:5432/vendas_db")
 
-# Engine do SQLAlchemy usando pg8000 (para evitar problemas de codificação com psycopg2)
-DATABASE_URL_PG8000 = DATABASE_URL.replace("postgresql://", "postgresql+pg8000://")
-engine = create_engine(DATABASE_URL_PG8000, pool_pre_ping=True)
+if DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+else:
+    DATABASE_URL_PG = DATABASE_URL.replace("postgresql://", "postgresql+pg8000://") if "postgresql+pg8000" not in DATABASE_URL else DATABASE_URL
+    try:
+        test_engine = create_engine(DATABASE_URL_PG, pool_pre_ping=True)
+        with test_engine.connect() as conn:
+            pass
+        engine = test_engine
+    except Exception:
+        # Fallback para SQLite em desenvolvimento local sem container ativo
+        engine = create_engine("sqlite:///./olist.db", connect_args={"check_same_thread": False})
 
-# Session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Base declarativa para modelos
 Base = declarative_base()
 
 
 def get_db():
-    """
-    Dependency para obter sessão do banco de dados.
-    Usada nos endpoints FastAPI.
-    """
+    """Dependency para obter sessão do banco de dados nos endpoints FastAPI."""
     db = SessionLocal()
     try:
         yield db
@@ -37,16 +40,19 @@ def get_db():
 
 
 def init_db():
-    """
-    Inicializa o banco de dados criando todas as tabelas do dataset Olist.
-    Tabelas criadas:
-    - customers
-    - products
-    - orders
-    - order_items
-    - order_payments
-    """
-    # Importa todos os modelos para garantir que sejam registrados no Base
-    from backend.models import Customer, Product, Order, OrderItem, OrderPayment
-    
+    """Inicializa o banco de dados criando todas as tabelas e índices de alta performance."""
+    from backend.models import Customer, Product, Order, OrderItem, OrderPayment, ProductEmbedding
+    from sqlalchemy import text
+
     Base.metadata.create_all(bind=engine)
+    
+    # Cria índices otimizados em SQL puro para acelerar agrupamentos e joins
+    with engine.begin() as conn:
+        conn.execute(text('CREATE INDEX IF NOT EXISTS idx_customers_state ON customers(customer_state);'))
+        conn.execute(text('CREATE INDEX IF NOT EXISTS idx_orders_customer_id ON orders(customer_id);'))
+        conn.execute(text('CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);'))
+        conn.execute(text('CREATE INDEX IF NOT EXISTS idx_order_items_product_id ON order_items(product_id);'))
+        conn.execute(text('CREATE INDEX IF NOT EXISTS idx_orders_purchase_time ON orders(order_purchase_timestamp);'))
+        conn.execute(text('CREATE INDEX IF NOT EXISTS idx_order_payments_order_id ON order_payments(order_id);'))
+        conn.execute(text('CREATE INDEX IF NOT EXISTS idx_order_payments_type ON order_payments(payment_type);'))
+

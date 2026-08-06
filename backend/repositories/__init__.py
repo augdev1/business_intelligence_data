@@ -1,6 +1,7 @@
 """
 Repositories do projeto - Dataset Olist.
 """
+
 from backend.repositories.base import BaseRepository
 from backend.repositories.customer_repository import CustomerRepository
 from backend.repositories.product_repository import ProductRepository
@@ -16,5 +17,5 @@ __all__ = [
     "OrderRepository",
     "OrderItemRepository",
     "OrderPaymentRepository",
-    "KPIRepository"
+    "KPIRepository",
 ]

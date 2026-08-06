@@ -1,0 +1,52 @@
+name: CI/CD Pipeline - Olist E-Commerce BI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-test:
+    name: Lint & Unit/Integration Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: ankane/pgvector:v0.8.0
+        env:
+          POSTGRES_USER: vendas_user
+          POSTGRES_PASSWORD: vendas_password
+          POSTGRES_DB: vendas_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Code Formatting Check (Black)
+        run: |
+          black --check .
+
+      - name: Run Test Suite (Pytest)
+        env:
+          DATABASE_URL: postgresql://vendas_user:vendas_password@localhost:5432/vendas_db
+        run: |
+          pytest -v

@@ -1,6 +1,7 @@
 """
 Modelo SQLAlchemy para a tabela de vendas.
 """
+
 from sqlalchemy import Column, Integer, String, Date, Numeric, DateTime, CheckConstraint
 from sqlalchemy.sql import func
 from database.connection import Base
@@ -9,7 +10,7 @@ from database.connection import Base
 class Venda(Base):
     """
     Modelo representando uma venda.
-    
+
     Atributos:
         id: Chave primária auto-incremento
         id_venda: Identificador único da venda (do CSV)
@@ -23,8 +24,9 @@ class Venda(Base):
         created_at: Timestamp de criação
         updated_at: Timestamp de atualização
     """
+
     __tablename__ = "vendas"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     id_venda = Column(String(50), unique=True, nullable=False, index=True)
     data_venda = Column(Date, nullable=False, index=True)
@@ -36,11 +38,11 @@ class Venda(Base):
     faturamento = Column(Numeric(12, 2), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-    
+
     __table_args__ = (
-        CheckConstraint('quantidade > 0', name='ck_quantidade_positiva'),
-        CheckConstraint('valor_unitario >= 0', name='ck_valor_unitario_nao_negativo'),
+        CheckConstraint("quantidade > 0", name="ck_quantidade_positiva"),
+        CheckConstraint("valor_unitario >= 0", name="ck_valor_unitario_nao_negativo"),
     )
-    
+
     def __repr__(self):
         return f"<Venda(id_venda='{self.id_venda}', produto='{self.produto}', faturamento={self.faturamento})>"

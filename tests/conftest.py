@@ -1,12 +1,12 @@
 """
 Configuração de fixtures para testes.
 """
+
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database.connection import Base
 from backend.models.venda import Venda
-
 
 # Database de teste
 TEST_DATABASE_URL = "sqlite:///./test.db"
@@ -36,12 +36,12 @@ def test_db(test_engine):
 def sample_venda_data():
     """Dados de venda de exemplo para testes."""
     return {
-        'id_venda': 'TEST001',
-        'data_venda': date(2024, 1, 1),
-        'produto': 'Produto Teste',
-        'categoria': 'Categoria Teste',
-        'cidade': 'São Paulo',
-        'quantidade': 10,
-        'valor_unitario': Decimal('100.00'),
-        'faturamento': Decimal('1000.00')
+        "id_venda": "TEST001",
+        "data_venda": date(2024, 1, 1),
+        "produto": "Produto Teste",
+        "categoria": "Categoria Teste",
+        "cidade": "São Paulo",
+        "quantidade": 10,
+        "valor_unitario": Decimal("100.00"),
+        "faturamento": Decimal("1000.00"),
     }

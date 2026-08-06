@@ -80,7 +80,7 @@ export function GradientSelector({ currentValue }: { currentValue: number }) {
                 className="relative flex-shrink-0 rounded-full transition-all duration-300"
                 style={{
                   width: t.size, height: t.size,
-                  background: active ? t.color : '#1e2860',
+                  background: active ? t.color : '#151e18',
                   boxShadow: active ? `0 0 18px ${t.color}55, 0 0 38px ${t.color}28` : 'none',
                 }}>
                 {active && <OrbitalDots color={t.color} radius={t.size + 6} />}
@@ -92,7 +92,7 @@ export function GradientSelector({ currentValue }: { currentValue: number }) {
                     minWidth: 36, maxWidth: 68,
                     background: i < reached - 1
                       ? `linear-gradient(90deg,${t.color},${TIERS[i+1].color})`
-                      : '#1e2860',
+                      : '#151e18',
                   }} />
               )}
             </div>
@@ -104,7 +104,7 @@ export function GradientSelector({ currentValue }: { currentValue: number }) {
         {TIERS.map((t, i) => (
           <div key={t.label} className="flex-1 text-center"
             style={{ fontSize: '.67rem', fontWeight: 700, letterSpacing: '.04em',
-              color: i < reached ? t.color : '#2a3870' }}>
+              color: i < reached ? t.color : '#475569' }}>
             {t.label}
           </div>
         ))}

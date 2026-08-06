@@ -1,0 +1,78 @@
+version: 2
+
+sources:
+  - name: public
+    database: vendas_db
+    schema: public
+    tables:
+      - name: customers
+      - name: products
+      - name: orders
+      - name: order_items
+      - name: order_payments
+
+models:
+  - name: stg_customers
+    description: "Visão limpa da tabela bruta de clientes"
+    columns:
+      - name: customer_id
+        description: "ID do cliente por pedido (Primary Key)"
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_products
+    description: "Visão limpa da tabela bruta de produtos"
+    columns:
+      - name: product_id
+        description: "ID único do produto (Primary Key)"
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_orders
+    description: "Visão limpa da tabela bruta de pedidos"
+    columns:
+      - name: order_id
+        description: "ID único do pedido (Primary Key)"
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "Foreign key referenciando stg_customers"
+        tests:
+          - not_null
+
+  - name: dim_customers
+    description: "Dimensão agregada de clientes"
+    columns:
+      - name: customer_id
+        description: "Chave primária do cliente"
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_products
+    description: "Dimensão agregada de produtos"
+    columns:
+      - name: product_id
+        description: "Chave primária do produto"
+        tests:
+          - unique
+          - not_null
+
+  - name: fct_orders
+    description: "Tabela fato agregando métricas de pedidos, itens e pagamentos"
+    columns:
+      - name: order_id
+        description: "Chave primária do pedido"
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "Chave estrangeira apontando para dim_customers"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id

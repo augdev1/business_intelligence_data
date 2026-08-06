@@ -37,23 +37,23 @@ export function Customers() {
       <PageHeader title="Clientes e Geografia" sub="Distribuição geográfica e comportamento de compra" />
 
       <div className="grid grid-cols-4 gap-4 mb-4">
-        <KPICard icon="👥" label="Clientes Únicos"  value={fmt.number(c)}          delta="Total cadastrado" />
-        <KPICard icon="🛒" label="Pedidos Totais"   value={fmt.number(p)}          delta="Volume completo" />
-        <KPICard icon="📈" label="Pedidos/Cliente"  value={ppc.toFixed(2)}         delta="Frequência média" />
-        <KPICard icon="💳" label="Ticket Médio"     value={fmt.currency(t)}        delta="Por pedido" />
+        <KPICard icon="👥" label="Clientes Únicos"  value={fmt.number(c)}          delta="Total cadastrado" color="#a855f7" />
+        <KPICard icon="🛒" label="Pedidos Totais"   value={fmt.number(p)}          delta="Volume completo" color="#06b6d4" />
+        <KPICard icon="📈" label="Pedidos/Cliente"  value={ppc.toFixed(2)}         delta="Frequência média" color="#10b981" />
+        <KPICard icon="💳" label="Ticket Médio"     value={fmt.currency(t)}        delta="Por pedido" color="#f59e0b" />
       </div>
 
       {/* State filter chips */}
       {allStates.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-4">
-          <button className="chip-btn" style={selectedStates.length === 0 ? { borderColor:'var(--acc)', color:'var(--acc)', background:'rgba(92,111,245,.12)' } : {}}
+          <button className="chip-btn" style={selectedStates.length === 0 ? { borderColor:'var(--acc)', color:'var(--acc)', background:'rgba(16,185,129,.15)' } : {}}
             onClick={() => setSelectedStates([])}>
             Todos
           </button>
           {allStates.map(s => (
             <button key={s} className="chip-btn"
               style={active.includes(s) && selectedStates.length > 0
-                ? { borderColor:'var(--acc)', color:'var(--acc)', background:'rgba(92,111,245,.12)' } : {}}
+                ? { borderColor:'var(--acc)', color:'var(--acc)', background:'rgba(16,185,129,.15)' } : {}}
               onClick={() => toggleState(s)}>
               {s}
             </button>
@@ -103,25 +103,28 @@ export function Customers() {
               </PieChart>
             </ResponsiveContainer>
             <div className="flex flex-col justify-center gap-2">
-              {[...payments].sort((a,b) => b.valor_total - a.valor_total).map((r, i) => (
-                <div key={i} className="pay-row">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                      style={{ background: COLORS[i % COLORS.length] }} />
-                    <span style={{ color:'var(--text)', fontSize:'.82rem', fontWeight:500 }}>
-                      {r.tipo.replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase())}
-                    </span>
+              {[...payments].sort((a,b) => b.valor_total - a.valor_total).map((r, i) => {
+                const name = (r.tipo || r.metodo || 'Outros').replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase())
+                return (
+                  <div key={i} className="pay-row">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                        style={{ background: COLORS[i % COLORS.length] }} />
+                      <span style={{ color:'var(--text)', fontSize:'.82rem', fontWeight:500 }}>
+                        {name}
+                      </span>
+                    </div>
+                    <div className="flex items-baseline gap-1.5">
+                      <span style={{ color:'var(--acc)', fontWeight:700, fontSize:'.88rem' }}>
+                        {fmt.currency(r.valor_total)}
+                      </span>
+                      <span style={{ color:'var(--sub)', fontSize:'.72rem' }}>
+                        {fmt.pct(totalPay > 0 ? r.valor_total / totalPay * 100 : 0)}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-baseline gap-1.5">
-                    <span style={{ color:'var(--acc)', fontWeight:700, fontSize:'.88rem' }}>
-                      {fmt.currency(r.valor_total)}
-                    </span>
-                    <span style={{ color:'var(--sub)', fontSize:'.72rem' }}>
-                      {fmt.pct(totalPay > 0 ? r.valor_total / totalPay * 100 : 0)}
-                    </span>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         </div>

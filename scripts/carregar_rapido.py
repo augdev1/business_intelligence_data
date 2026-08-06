@@ -2,6 +2,7 @@
 Script de carga rápida do dataset Olist usando bulk inserts com ON CONFLICT DO NOTHING.
 Muito mais rápido que carregar_olist.py (sem queries individuais de deduplicação).
 """
+
 import sys
 import os
 import numpy as np
@@ -58,11 +59,11 @@ def main():
     transformed = transform_all(dfs)
 
     tables = [
-        ("customers",     Customer,     "customer_id"),
-        ("products",      Product,      "product_id"),
-        ("orders",        Order,        "order_id"),
-        ("order_items",   OrderItem,    None),
-        ("order_payments",OrderPayment, None),
+        ("customers", Customer, "customer_id"),
+        ("products", Product, "product_id"),
+        ("orders", Order, "order_id"),
+        ("order_items", OrderItem, None),
+        ("order_payments", OrderPayment, None),
     ]
 
     total = 0

@@ -1,6 +1,7 @@
 """
 Aplicação principal FastAPI - Dataset Olist Brazilian E-Commerce.
 """
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api.routes import kpi, ia
@@ -10,7 +11,7 @@ from database.connection import init_db
 app = FastAPI(
     title="Sistema de Análise Olist E-Commerce",
     description="API para análise de e-commerce com dataset Olist e capacidades de IA",
-    version="2.0.0"
+    version="2.0.0",
 )
 
 # Configura CORS
@@ -46,7 +47,7 @@ def root():
         "message": "Sistema de Análise Olist E-Commerce",
         "version": "2.0.0",
         "dataset": "Olist Brazilian E-Commerce",
-        "docs": "/docs"
+        "docs": "/docs",
     }
 
 

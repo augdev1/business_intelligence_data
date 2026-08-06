@@ -1,6 +1,7 @@
 """
 Rotas da API para consultas de indicadores.
 """
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from datetime import date
@@ -16,10 +17,10 @@ router = APIRouter(prefix="/api/v1/indicadores", tags=["indicadores"])
 def obter_todos_indicadores(db: Session = Depends(get_db)):
     """
     Retorna todos os indicadores de negócio.
-    
+
     Args:
         db: Sessão do banco de dados
-        
+
     Returns:
         Todos os indicadores calculados
     """
@@ -32,10 +33,10 @@ def obter_todos_indicadores(db: Session = Depends(get_db)):
 def obter_faturamento_total(db: Session = Depends(get_db)):
     """
     Retorna o faturamento total.
-    
+
     Args:
         db: Sessão do banco de dados
-        
+
     Returns:
         Faturamento total
     """
@@ -47,10 +48,10 @@ def obter_faturamento_total(db: Session = Depends(get_db)):
 def obter_quantidade_total(db: Session = Depends(get_db)):
     """
     Retorna a quantidade total vendida.
-    
+
     Args:
         db: Sessão do banco de dados
-        
+
     Returns:
         Quantidade total
     """
@@ -62,10 +63,10 @@ def obter_quantidade_total(db: Session = Depends(get_db)):
 def obter_ticket_medio(db: Session = Depends(get_db)):
     """
     Retorna o ticket médio.
-    
+
     Args:
         db: Sessão do banco de dados
-        
+
     Returns:
         Ticket médio
     """
@@ -77,10 +78,10 @@ def obter_ticket_medio(db: Session = Depends(get_db)):
 def obter_evolucao_mensal(db: Session = Depends(get_db)):
     """
     Retorna a evolução mensal das vendas.
-    
+
     Args:
         db: Sessão do banco de dados
-        
+
     Returns:
         Lista de dados mensais
     """
@@ -92,11 +93,11 @@ def obter_evolucao_mensal(db: Session = Depends(get_db)):
 def obter_ranking_produtos(limit: int = 10, db: Session = Depends(get_db)):
     """
     Retorna o ranking de produtos.
-    
+
     Args:
         limit: Quantidade máxima de produtos
         db: Sessão do banco de dados
-        
+
     Returns:
         Lista de produtos no ranking
     """
@@ -108,11 +109,11 @@ def obter_ranking_produtos(limit: int = 10, db: Session = Depends(get_db)):
 def obter_ranking_cidades(limit: int = 10, db: Session = Depends(get_db)):
     """
     Retorna o ranking de cidades.
-    
+
     Args:
         limit: Quantidade máxima de cidades
         db: Sessão do banco de dados
-        
+
     Returns:
         Lista de cidades no ranking
     """
@@ -121,19 +122,15 @@ def obter_ranking_cidades(limit: int = 10, db: Session = Depends(get_db)):
 
 
 @router.get("/periodo")
-def obter_vendas_por_periodo(
-    data_inicio: date,
-    data_fim: date,
-    db: Session = Depends(get_db)
-):
+def obter_vendas_por_periodo(data_inicio: date, data_fim: date, db: Session = Depends(get_db)):
     """
     Retorna vendas em um período específico.
-    
+
     Args:
         data_inicio: Data inicial
         data_fim: Data final
         db: Sessão do banco de dados
-        
+
     Returns:
         Lista de vendas no período
     """

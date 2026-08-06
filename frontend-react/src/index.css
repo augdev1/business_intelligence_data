@@ -1,50 +1,53 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
-/* ── CSS variables — dark (default) ── */
+/* ── CSS variables — Preto Fosco & Verde ── */
 :root {
-  --bg:        #070a1f;
-  --sb-bg:     #0b0e2e;
-  --glass:     rgba(13,17,50,0.58);
-  --glass2:    rgba(13,17,50,0.82);
-  --solid:     #0d1132;
-  --border:    rgba(255,255,255,0.07);
-  --border-hv: rgba(92,111,245,0.45);
-  --text:      #e2e8f0;
-  --sub:       #7a93b6;
-  --acc:       #5c6ff5;
-  --acc2:      #a855f7;
-  --grid:      rgba(255,255,255,0.035);
-  --shadow:    0 4px 30px rgba(0,0,0,0.6);
-  --shadow-hv: 0 14px 50px rgba(92,111,245,0.22),0 4px 20px rgba(0,0,0,0.6);
-  --inset:     inset 0 1px 0 rgba(255,255,255,0.055);
-}
-.light {
-  --bg:        #eef0fb;
-  --glass:     rgba(255,255,255,0.72);
-  --glass2:    rgba(255,255,255,0.92);
-  --solid:     #ffffff;
-  --border:    rgba(180,190,240,0.55);
-  --border-hv: rgba(92,111,245,0.5);
-  --text:      #0f172a;
-  --sub:       #546280;
-  --acc:       #4c6ef5;
-  --acc2:      #7c3aed;
-  --grid:      rgba(0,0,0,0.035);
-  --shadow:    0 2px 20px rgba(0,0,0,0.08);
-  --shadow-hv: 0 14px 44px rgba(76,110,245,0.18),0 2px 10px rgba(0,0,0,0.1);
-  --inset:     inset 0 1px 0 rgba(255,255,255,0.9);
+  --bg:        #090a0f;
+  --sb-bg:     #0d0f14;
+  --glass:     rgba(18, 21, 28, 0.78);
+  --glass2:    rgba(22, 26, 35, 0.94);
+  --solid:     #12151c;
+  --border:    rgba(255, 255, 255, 0.08);
+  --border-hv: rgba(16, 185, 129, 0.45);
+  --text:      #f8fafc;
+  --sub:       #94a3b8;
+  --acc:       #10b981;
+  --acc2:      #34d399;
+  --grid:      rgba(255, 255, 255, 0.025);
+  --shadow:    0 8px 32px rgba(0, 0, 0, 0.7);
+  --shadow-hv: 0 12px 40px rgba(16, 185, 129, 0.2), 0 4px 20px rgba(0, 0, 0, 0.7);
+  --inset:     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-* { font-family: 'Inter', system-ui, sans-serif !important; box-sizing: border-box; }
-body { background: var(--bg); color: var(--text); margin: 0; }
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.light {
+  --bg:        #f1f5f9;
+  --sb-bg:     #ffffff;
+  --glass:     rgba(255, 255, 255, 0.85);
+  --glass2:    rgba(248, 250, 252, 0.95);
+  --solid:     #ffffff;
+  --border:    rgba(15, 23, 42, 0.1);
+  --border-hv: rgba(16, 185, 129, 0.5);
+  --text:      #0f172a;
+  --sub:       #64748b;
+  --acc:       #059669;
+  --acc2:      #10b981;
+  --grid:      rgba(0, 0, 0, 0.03);
+  --shadow:    0 4px 20px rgba(0, 0, 0, 0.06);
+  --shadow-hv: 0 12px 36px rgba(16, 185, 129, 0.15);
+  --inset:     inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+* { font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif !important; box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; }
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.3); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(16, 185, 129, 0.6); }
 
 .glass-card {
   background: var(--glass);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border);
   box-shadow: var(--shadow), var(--inset);
 }
@@ -57,26 +60,31 @@ body { background: var(--bg); color: var(--text); margin: 0; }
   border-color: var(--border-hv);
 }
 
+.sidebar {
+  background: var(--sb-bg);
+  border-right: 1px solid var(--border);
+}
+
 .nav-item {
   display: flex; align-items: center; gap: .65rem;
   padding: .52rem .8rem; border-radius: 10px;
-  color: rgba(255,255,255,.52); font-size: .84rem; font-weight: 500;
+  color: var(--sub); font-size: .84rem; font-weight: 500;
   cursor: pointer; transition: all .15s ease;
   border-left: 3px solid transparent; text-decoration: none;
 }
-.nav-item:hover { background: rgba(255,255,255,.07); color: rgba(255,255,255,.88); }
-.nav-item.active { background: rgba(92,111,245,.2); color: #a5b4ff; font-weight: 600; border-left-color: var(--acc); }
+.nav-item:hover { background: rgba(16, 185, 129, 0.08); color: var(--text); }
+.nav-item.active { background: rgba(16, 185, 129, 0.15); color: #34d399; font-weight: 600; border-left-color: var(--acc); }
 
 .section-label { color: var(--sub); font-size: .64rem; font-weight: 700; text-transform: uppercase; letter-spacing: .11em; }
 
 .kpi-shimmer::before {
   content: ''; position: absolute; top: 0; left: -80%; width: 50%; height: 100%;
-  background: linear-gradient(90deg,transparent,rgba(255,255,255,.045),transparent);
+  background: linear-gradient(90deg,transparent,rgba(16, 185, 129, 0.08),transparent);
   transition: left .55s ease; pointer-events: none;
 }
 .kpi-shimmer:hover::before { left: 160%; }
 .kpi-accent { position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg,var(--acc),var(--acc2)); opacity: 0; transition: opacity .22s; }
+  background: linear-gradient(90deg, #10b981, #34d399); opacity: 0; transition: opacity .22s; }
 .kpi-shimmer:hover .kpi-accent { opacity: 1; }
 
 .pay-row {
@@ -92,15 +100,15 @@ body { background: var(--bg); color: var(--text); margin: 0; }
   border-radius: 20px; color: var(--sub); font-size: .75rem; font-weight: 500;
   padding: .3rem .9rem; cursor: pointer; transition: all .15s ease;
 }
-.chip-btn:hover { background: rgba(92,111,245,.14); border-color: var(--border-hv); color: var(--acc); transform: translateY(-1px); }
+.chip-btn:hover { background: rgba(16, 185, 129, 0.15); border-color: var(--border-hv); color: #34d399; transform: translateY(-1px); }
 
 .chat-input {
   background: var(--glass2); color: var(--text); border: 1px solid var(--border);
   border-radius: 12px; padding: .75rem 1rem; width: 100%; outline: none; font-size: .88rem; resize: none;
-  transition: border-color .15s;
+  transition: border-color .15s, box-shadow .15s;
 }
-.chat-input:focus { border-color: var(--border-hv); }
+.chat-input:focus { border-color: var(--acc); box-shadow: 0 0 15px rgba(16, 185, 129, 0.25); }
 
 pre, code { font-family: 'Fira Code', monospace !important; }
-pre { background: rgba(0,0,0,.35) !important; border: 1px solid var(--border); border-radius: 10px;
-  padding: .9rem 1rem; font-size: .79rem; overflow-x: auto; color: #a5b4ff; }
+pre { background: rgba(0,0,0,.5) !important; border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 10px;
+  padding: .9rem 1rem; font-size: .79rem; overflow-x: auto; color: #34d399; }

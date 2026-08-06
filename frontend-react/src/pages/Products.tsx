@@ -3,7 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { useKPIs } from '@/hooks/useKPIs'
 import { ChartCard, CustomTooltip } from '@/components/ChartCard'
 import { PageHeader, Loader, ErrorMsg } from './Dashboard'
-import { COLORS, fmt } from '@/lib/utils'
+import { COLORS, PRODUCT_COLORS, fmt } from '@/lib/utils'
 
 export function Products() {
   const { data, loading, error } = useKPIs()
@@ -40,7 +40,9 @@ export function Products() {
                 axisLine={false} tickLine={false} width={140} />
               <Tooltip content={<CustomTooltip currency />} />
               <Bar dataKey="faturamento" name="Faturamento" radius={[0,4,4,0]}>
-                {produtos.map((_, i) => <Cell key={i} fill={`rgba(92,111,245,${.45 + (i/topN)*.55})`} />)}
+                {produtos.map((_, i) => (
+                  <Cell key={i} fill={PRODUCT_COLORS[i % PRODUCT_COLORS.length]} />
+                ))}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
@@ -56,7 +58,9 @@ export function Products() {
                 axisLine={false} tickLine={false} width={90} />
               <Tooltip content={<CustomTooltip currency />} />
               <Bar dataKey="faturamento" name="Faturamento" radius={[0,4,4,0]}>
-                {categorias.map((_, i) => <Cell key={i} fill={`rgba(168,85,247,${.45 + (i/topN)*.55})`} />)}
+                {categorias.map((_, i) => (
+                  <Cell key={i} fill={PRODUCT_COLORS[i % PRODUCT_COLORS.length]} />
+                ))}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
@@ -69,7 +73,9 @@ export function Products() {
             <PieChart>
               <Pie data={categorias} dataKey="faturamento" nameKey="categoria"
                 innerRadius="52%" outerRadius="75%" paddingAngle={2}>
-                {categorias.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                {categorias.map((_, i) => (
+                  <Cell key={i} fill={PRODUCT_COLORS[i % PRODUCT_COLORS.length]} />
+                ))}
               </Pie>
               <Tooltip formatter={(v) => fmt.currency(v as number)} />
               <Legend wrapperStyle={{ fontSize:11, color:'var(--sub)' }} />
@@ -84,7 +90,11 @@ export function Products() {
               <XAxis dataKey="categoria" tick={{ fill:'var(--sub)', fontSize:9 }} axisLine={false} tickLine={false} angle={-30} textAnchor="end" height={48} />
               <YAxis tick={{ fill:'var(--sub)', fontSize:10 }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="quantidade" name="Unidades" fill="#06b6d4" radius={[4,4,0,0]} />
+              <Bar dataKey="quantidade" name="Unidades" radius={[4,4,0,0]}>
+                {categorias.map((_, i) => (
+                  <Cell key={i} fill={PRODUCT_COLORS[i % PRODUCT_COLORS.length]} />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -104,8 +114,14 @@ export function Products() {
               {(data.top_categorias ?? []).map((r, i) => (
                 <tr key={i} style={{ borderBottom:'1px solid var(--border)' }}
                   className="transition-colors hover:bg-white/5">
-                  <td className="py-2 px-3" style={{ fontSize:'.84rem' }}>{r.categoria}</td>
-                  <td className="py-2 px-3 font-semibold" style={{ color:'var(--acc)', fontSize:'.84rem' }}>{fmt.currency(r.faturamento)}</td>
+                  <td className="py-2 px-3 flex items-center gap-2" style={{ fontSize:'.84rem' }}>
+                    <div className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                      style={{ background: PRODUCT_COLORS[i % PRODUCT_COLORS.length] }} />
+                    <span>{r.categoria}</span>
+                  </td>
+                  <td className="py-2 px-3 font-semibold" style={{ color: PRODUCT_COLORS[i % PRODUCT_COLORS.length], fontSize:'.84rem' }}>
+                    {fmt.currency(r.faturamento)}
+                  </td>
                   <td className="py-2 px-3" style={{ fontSize:'.84rem' }}>{fmt.number(r.quantidade)}</td>
                 </tr>
               ))}

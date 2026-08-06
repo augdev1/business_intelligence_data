@@ -19,10 +19,10 @@ function NavIcon({ color, children }: { color: string; children: React.ReactNode
 }
 
 const NAV_ICONS = [
-  'linear-gradient(135deg,#5c6ff5,#a855f7)',
-  'linear-gradient(135deg,#06b6d4,#0891b2)',
   'linear-gradient(135deg,#10b981,#059669)',
-  'linear-gradient(135deg,#f59e0b,#d97706)',
+  'linear-gradient(135deg,#34d399,#10b981)',
+  'linear-gradient(135deg,#059669,#047857)',
+  'linear-gradient(135deg,#4ade80,#16a34a)',
 ]
 
 export function Sidebar() {
@@ -36,7 +36,7 @@ export function Sidebar() {
       <div className="px-3 pt-5 pb-2">
         <div className="flex items-center gap-2.5 mb-5">
           <div className="w-9 h-9 flex-shrink-0 rounded-[10px] flex items-center justify-center text-lg"
-            style={{ background:'linear-gradient(135deg,#5c6ff5,#a855f7)', boxShadow:'0 4px 16px rgba(92,111,245,.45)' }}>
+            style={{ background:'linear-gradient(135deg,#10b981,#059669)', boxShadow:'0 4px 16px rgba(16,185,129,.4)' }}>
             📊
           </div>
           <div>
@@ -49,14 +49,14 @@ export function Sidebar() {
 
         {/* User card */}
         <div className="flex items-center gap-2.5 rounded-xl p-3 mb-5"
-          style={{ background:'rgba(255,255,255,.05)', border:'1px solid rgba(255,255,255,.07)' }}>
+          style={{ background:'rgba(255,255,255,.04)', border:'1px solid rgba(255,255,255,.07)' }}>
           <div className="w-8 h-8 flex-shrink-0 rounded-full flex items-center justify-center text-sm"
-            style={{ background:'linear-gradient(135deg,#5c6ff5,#a855f7)' }}>👤</div>
+            style={{ background:'linear-gradient(135deg,#10b981,#059669)' }}>👤</div>
           <div className="flex-1 min-w-0">
             <div className="text-[#e2e8f0] text-[.78rem] font-semibold">Bem-vindo!</div>
             <div className="text-[.62rem] mt-px truncate" style={{ color:'rgba(255,255,255,.28)' }}>{today}</div>
           </div>
-          <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background:'#10b981', boxShadow:'0 0 6px #10b98177' }} />
+          <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background:'#10b981', boxShadow:'0 0 6px #10b981' }} />
         </div>
 
         {/* Nav label */}
@@ -92,7 +92,7 @@ export function Sidebar() {
 
         {/* Help card */}
         <div className="rounded-[14px] p-4 relative overflow-hidden"
-          style={{ background:'linear-gradient(135deg,rgba(92,111,245,.6),rgba(168,85,247,.55))', border:'1px solid rgba(92,111,245,.35)' }}>
+          style={{ background:'linear-gradient(135deg,rgba(16,185,129,.35),rgba(5,150,105,.3))', border:'1px solid rgba(16,185,129,.35)' }}>
           <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full" style={{ background:'rgba(255,255,255,.06)' }} />
           <div className="absolute -bottom-6 -left-2 w-14 h-14 rounded-full" style={{ background:'rgba(255,255,255,.04)' }} />
           <div className="relative">
@@ -103,7 +103,7 @@ export function Sidebar() {
             </div>
             <NavLink to="/assistente"
               className="block text-center text-white text-[.66rem] font-bold py-1.5 rounded-[8px] tracking-[.06em]"
-              style={{ background:'rgba(255,255,255,.18)', border:'1px solid rgba(255,255,255,.22)' }}>
+              style={{ background:'rgba(16,185,129,.4)', border:'1px solid rgba(16,185,129,.5)' }}>
               ASSISTENTE IA →
             </NavLink>
           </div>

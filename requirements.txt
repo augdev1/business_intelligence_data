@@ -4,9 +4,15 @@ uvicorn[standard]==0.32.0
 pydantic==2.9.2
 pydantic-settings==2.6.0
 
-# Database
+# Database & Vector Search
 sqlalchemy==2.0.35
 psycopg2-binary==2.9.9
+pg8000==1.31.2
+pgvector==0.3.6
+
+# dbt
+dbt-core==1.8.7
+dbt-postgres==1.8.2
 
 # Data Processing
 pandas==2.2.3
@@ -24,10 +30,11 @@ langchain-core==0.3.15
 streamlit==1.39.0
 plotly==5.24.1
 
-# Testing
+# Testing & Linting
 pytest==8.3.3
 pytest-asyncio==0.24.0
 httpx==0.27.2
+black==24.10.0
 
 # Utilities
 python-dotenv==1.0.1

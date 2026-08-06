@@ -1,6 +1,7 @@
 """
 Rotas da API para consultas via IA.
 """
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -12,17 +13,14 @@ router = APIRouter(prefix="/api/v1/ia", tags=["ia"])
 
 
 @router.post("/perguntar", response_model=IAPerguntaResponse)
-def perguntar(
-    request: IAPerguntaRequest,
-    db: Session = Depends(get_db)
-):
+def perguntar(request: IAPerguntaRequest, db: Session = Depends(get_db)):
     """
     Processa uma pergunta em linguagem natural.
-    
+
     Args:
         request: Pergunta do usuário
         db: Sessão do banco de dados
-        
+
     Returns:
         Resposta da IA com SQL gerado e dados
     """

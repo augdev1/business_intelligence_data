@@ -1,6 +1,7 @@
 """
 Rotas da API para consultas de KPIs do dataset Olist.
 """
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -14,10 +15,10 @@ router = APIRouter(prefix="/api/v1/kpi", tags=["kpi"])
 def obter_todos_kpis(db: Session = Depends(get_db)):
     """
     Retorna todos os KPIs de negócio do dataset Olist.
-    
+
     Args:
         db: Sessão do banco de dados
-        
+
     Returns:
         Todos os KPIs calculados
     """
@@ -30,10 +31,10 @@ def obter_todos_kpis(db: Session = Depends(get_db)):
 def obter_receita_total(db: Session = Depends(get_db)):
     """
     Retorna a receita total.
-    
+
     Args:
         db: Sessão do banco de dados
-        
+
     Returns:
         Receita total
     """
@@ -45,10 +46,10 @@ def obter_receita_total(db: Session = Depends(get_db)):
 def obter_numero_pedidos(db: Session = Depends(get_db)):
     """
     Retorna o número de pedidos.
-    
+
     Args:
         db: Sessão do banco de dados
-        
+
     Returns:
         Número de pedidos
     """
@@ -60,10 +61,10 @@ def obter_numero_pedidos(db: Session = Depends(get_db)):
 def obter_clientes_unicos(db: Session = Depends(get_db)):
     """
     Retorna o número de clientes únicos.
-    
+
     Args:
         db: Sessão do banco de dados
-        
+
     Returns:
         Número de clientes únicos
     """
@@ -75,10 +76,10 @@ def obter_clientes_unicos(db: Session = Depends(get_db)):
 def obter_ticket_medio(db: Session = Depends(get_db)):
     """
     Retorna o ticket médio.
-    
+
     Args:
         db: Sessão do banco de dados
-        
+
     Returns:
         Ticket médio
     """
@@ -90,10 +91,10 @@ def obter_ticket_medio(db: Session = Depends(get_db)):
 def obter_receita_por_estado(db: Session = Depends(get_db)):
     """
     Retorna a receita por estado.
-    
+
     Args:
         db: Sessão do banco de dados
-        
+
     Returns:
         Receita por estado
     """
@@ -105,10 +106,10 @@ def obter_receita_por_estado(db: Session = Depends(get_db)):
 def obter_receita_por_mes(db: Session = Depends(get_db)):
     """
     Retorna a receita por mês.
-    
+
     Args:
         db: Sessão do banco de dados
-        
+
     Returns:
         Receita por mês
     """
@@ -120,11 +121,11 @@ def obter_receita_por_mes(db: Session = Depends(get_db)):
 def obter_top_produtos(limit: int = 10, db: Session = Depends(get_db)):
     """
     Retorna os top produtos.
-    
+
     Args:
         limit: Quantidade máxima de produtos
         db: Sessão do banco de dados
-        
+
     Returns:
         Lista de produtos no ranking
     """
@@ -136,11 +137,11 @@ def obter_top_produtos(limit: int = 10, db: Session = Depends(get_db)):
 def obter_top_categorias(limit: int = 10, db: Session = Depends(get_db)):
     """
     Retorna as top categorias.
-    
+
     Args:
         limit: Quantidade máxima de categorias
         db: Sessão do banco de dados
-        
+
     Returns:
         Lista de categorias no ranking
     """
@@ -152,10 +153,10 @@ def obter_top_categorias(limit: int = 10, db: Session = Depends(get_db)):
 def obter_metodos_pagamento(db: Session = Depends(get_db)):
     """
     Retorna os métodos de pagamento.
-    
+
     Args:
         db: Sessão do banco de dados
-        
+
     Returns:
         Métodos de pagamento
     """
@@ -167,10 +168,10 @@ def obter_metodos_pagamento(db: Session = Depends(get_db)):
 def obter_pedidos_por_estado(db: Session = Depends(get_db)):
     """
     Retorna os pedidos por estado.
-    
+
     Args:
         db: Sessão do banco de dados
-        
+
     Returns:
         Pedidos por estado
     """

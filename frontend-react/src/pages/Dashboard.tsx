@@ -45,10 +45,10 @@ export function Dashboard() {
       <PageHeader title="Visão Executiva" sub="Métricas gerais do e-commerce Olist" />
 
       <div className="grid grid-cols-4 gap-4 mb-4">
-        <KPICard icon="💰" label="Receita Total"    value={fmt.currency(data.receita_total)}  delta="Dataset completo" />
-        <KPICard icon="🛒" label="Total de Pedidos" value={fmt.number(data.numero_pedidos)}   delta="Pedidos realizados" />
-        <KPICard icon="👥" label="Clientes Únicos"  value={fmt.number(data.clientes_unicos)}  delta="Cadastros únicos" />
-        <KPICard icon="🎯" label="Ticket Médio"     value={fmt.currency(data.ticket_medio)}   delta="Por pedido" />
+        <KPICard icon="💰" label="Receita Total"    value={fmt.currency(data.receita_total)}  delta="Dataset completo" color="#10b981" />
+        <KPICard icon="🛒" label="Total de Pedidos" value={fmt.number(data.numero_pedidos)}   delta="Pedidos realizados" color="#06b6d4" />
+        <KPICard icon="👥" label="Clientes Únicos"  value={fmt.number(data.clientes_unicos)}  delta="Cadastros únicos" color="#a855f7" />
+        <KPICard icon="🎯" label="Ticket Médio"     value={fmt.currency(data.ticket_medio)}   delta="Por pedido" color="#f59e0b" />
       </div>
 
       <GradientSelector currentValue={data.receita_total} />
@@ -73,8 +73,8 @@ export function Dashboard() {
             <AreaChart data={dfMes}>
               <defs>
                 <linearGradient id="accGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%"  stopColor="#5c6ff5" stopOpacity={.35}/>
-                  <stop offset="95%" stopColor="#5c6ff5" stopOpacity={0}/>
+                  <stop offset="5%"  stopColor="#10b981" stopOpacity={.35}/>
+                  <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--grid)" />
@@ -83,7 +83,7 @@ export function Dashboard() {
                 tickFormatter={v => `R$${(v/1000).toFixed(0)}k`} />
               <Tooltip content={<CustomTooltip currency />} />
               <Area type="monotone" dataKey="receita" name="Receita"
-                stroke="#5c6ff5" strokeWidth={2.5} fill="url(#accGrad)" dot={{ fill:'#5c6ff5', r:4, strokeWidth:2, stroke:'var(--solid)' }} />
+                stroke="#10b981" strokeWidth={2.5} fill="url(#accGrad)" dot={{ fill:'#10b981', r:4, strokeWidth:2, stroke:'var(--solid)' }} />
             </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -96,7 +96,7 @@ export function Dashboard() {
               <YAxis tick={{ fill:'var(--sub)', fontSize:10 }} axisLine={false} tickLine={false}
                 tickFormatter={v => `R$${(v/1000).toFixed(0)}k`} />
               <Tooltip content={<CustomTooltip currency />} />
-              <Bar dataKey="receita" name="Receita" fill="#5c6ff5" radius={[4,4,0,0]} />
+              <Bar dataKey="receita" name="Receita" fill="#10b981" radius={[4,4,0,0]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -107,12 +107,12 @@ export function Dashboard() {
           <AreaChart data={dfAcum}>
             <defs>
               <linearGradient id="acc2Grad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%"  stopColor="#a855f7" stopOpacity={.3}/>
-                <stop offset="95%" stopColor="#a855f7" stopOpacity={0}/>
+                <stop offset="5%"  stopColor="#34d399" stopOpacity={.3}/>
+                <stop offset="95%" stopColor="#34d399" stopOpacity={0}/>
               </linearGradient>
               <linearGradient id="acc1Grad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%"  stopColor="#5c6ff5" stopOpacity={.18}/>
-                <stop offset="95%" stopColor="#5c6ff5" stopOpacity={0}/>
+                <stop offset="5%"  stopColor="#10b981" stopOpacity={.18}/>
+                <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--grid)" />
@@ -121,8 +121,8 @@ export function Dashboard() {
               tickFormatter={v => `R$${(v/1000).toFixed(0)}k`} />
             <Tooltip content={<CustomTooltip currency />} />
             <Legend wrapperStyle={{ fontSize:12, color:'var(--sub)' }} />
-            <Area type="monotone" dataKey="receita"   name="Mensal"     stroke="#a855f7" strokeWidth={2} fill="url(#acc2Grad)" strokeDasharray="5 3" />
-            <Area type="monotone" dataKey="acumulado" name="Acumulado"  stroke="#5c6ff5" strokeWidth={2.5} fill="url(#acc1Grad)" />
+            <Area type="monotone" dataKey="receita"   name="Mensal"     stroke="#34d399" strokeWidth={2} fill="url(#acc2Grad)" strokeDasharray="5 3" />
+            <Area type="monotone" dataKey="acumulado" name="Acumulado"  stroke="#10b981" strokeWidth={2.5} fill="url(#acc1Grad)" />
           </AreaChart>
         </ResponsiveContainer>
       </ChartCard>

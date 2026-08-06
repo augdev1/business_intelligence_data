@@ -1,6 +1,7 @@
 """
 Modelo SQLAlchemy para a tabela products do dataset Olist.
 """
+
 from sqlalchemy import Column, String, Numeric
 from sqlalchemy.orm import relationship
 from database.connection import Base
@@ -9,9 +10,9 @@ from database.connection import Base
 class Product(Base):
     """
     Modelo representando um produto.
-    
+
     Baseado no dataset Olist: olist_products_dataset.csv
-    
+
     Atributos:
         product_id: Chave primária, identificador único do produto
         product_category_name: Categoria do produto (em português)
@@ -23,8 +24,9 @@ class Product(Base):
         product_height_cm: Altura em cm
         product_width_cm: Largura em cm
     """
+
     __tablename__ = "products"
-    
+
     product_id = Column(String(50), primary_key=True, index=True)
     product_category_name = Column(String(100), index=True)
     product_name_lenght = Column(Numeric(10, 2))
@@ -34,9 +36,9 @@ class Product(Base):
     product_length_cm = Column(Numeric(10, 2))
     product_height_cm = Column(Numeric(10, 2))
     product_width_cm = Column(Numeric(10, 2))
-    
+
     # Relacionamento com order_items
     order_items = relationship("OrderItem", back_populates="product", cascade="all, delete-orphan")
-    
+
     def __repr__(self):
         return f"<Product(product_id='{self.product_id}', category='{self.product_category_name}')>"
