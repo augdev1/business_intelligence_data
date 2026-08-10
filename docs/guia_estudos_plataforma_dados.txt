@@ -1,0 +1,89 @@
+GUIA DE ESTUDOS: ARQUITETURA DE DADOS & ENGENHARIA DA PLATAFORMA OLIST
+====================================================================
+
+1. O que é um "Schema"?
+-----------------------
+No mundo dos bancos de dados, um Schema (Esquema) é como a planta baixa de uma casa. Ele define a estrutura organizacional do banco de dados:
+* Quais tabelas existem;
+* Quais são as colunas e os tipos de dados de cada uma (ex: texto, número, data);
+* Como as tabelas se relacionam (chaves primárias e chaves estrangeiras).
+
+No nosso projeto: Nós temos o schema relacional da Olist (clientes, pedidos, itens, pagamentos, produtos) mapeado no connection.py e no banco de dados SQLite/Postgres.
+
+
+2. A Arquitetura Medallion (Medalhão)
+-------------------------------------
+A Arquitetura Medallion é um padrão de design de dados que organiza os dados em três camadas lógicas de maturidade e qualidade. O objetivo é transformar dados brutos e "sujos" em dados limpos e prontos para o negócio passo a passo.
+
+[Dados Brutos / CSVs] ➔ [Bronze (Raw)] ➔ [Silver (Staging)] ➔ [Gold (Marts)]
+
+* Camada 1: Bronze (Raw/Bruta)
+  - O que é: É o dado exatamente como ele vem da fonte (neste caso, os arquivos CSVs originais do Kaggle), sem nenhuma alteração.
+  - Neste projeto: São as tabelas originais carregadas no banco de dados (customers, products, orders, etc.) pelo script de ingestão.
+
+* Camada 2: Silver (Silver/Staging)
+  - O que é: É a camada de limpeza e padronização. Aqui, limpamos valores nulos, convertemos formatos de data (ex: de texto para timestamp), removemos duplicados e padronizamos nomes.
+  - Neste projeto: No diretório dbt_olist/models/staging/, temos modelos como stg_orders e stg_products. Eles selecionam dados da camada Bronze, tratam campos e preparam o terreno.
+
+* Camada 3: Gold (Gold/Marts)
+  - O que é: É a camada de negócio. Os dados são organizados no modelo Star Schema (tabelas de fatos e dimensões), prontos para serem consumidos por dashboards (Power BI / React) e cientistas de dados.
+  - Neste projeto: No diretório dbt_olist/models/marts/, temos as tabelas dim_customers, dim_products e fct_orders. Elas contêm KPIs pré-calculados (como faturamento acumulado por produto e quantidade de itens vendidos).
+
+* Por que usamos a Medallion e qual foi o impacto neste projeto?
+  - Rastreabilidade (Lineage): Se um número de faturamento estiver errado no painel, conseguimos rastrear o erro sabendo exatamente em qual etapa (Bronze ➔ Silver ➔ Gold) o dado foi transformado.
+  - Performance: O painel em React não faz queries pesadas cruzando tabelas brutas com milhões de linhas. Ele consulta diretamente a camada Gold, onde os dados já estão consolidados e indexados.
+  - Segurança de dados: Desenvolvedores e analistas podem consumir a camada Gold sem risco de alterar ou ver dados sensíveis não tratados da camada Bronze.
+
+
+3. O que é o dbt (Data Build Tool)?
+-----------------------------------
+O dbt é uma ferramenta de linha de comando que foca no "T" (Transform) do processo de ELT (Extract, Load, Transform). Ele permite que engenheiros de dados escrevam transformações usando apenas código SQL (SELECT), gerenciando as dependências automaticamente.
+
+Como o dbt funciona neste projeto?
+* Modelos SQL: Cada arquivo .sql na pasta dbt_olist/models cria uma tabela ou view no banco de dados. Você não precisa escrever "CREATE TABLE..." ou "INSERT INTO...", o dbt faz isso por baixo dos panos baseado na sua query SQL.
+* Profiles (profiles.yml): Define as credenciais de acesso ao banco de dados (PostgreSQL/SQLite).
+* Testes de Qualidade (schema.yml): Permite configurar testes automáticos nas tabelas. Por exemplo, você pode declarar que a coluna customer_id deve ser única e nunca nula. Ao rodar dbt test, o dbt valida essas regras e avisa se houver corrupção de dados.
+
+
+4. Modelagem Dimensional: Star Schema
+--------------------------------------
+Para estruturar a camada Gold, usamos a modelagem dimensional inventada por Ralph Kimball, dividida em dois tipos de tabelas:
+
+* Tabelas Fato (Fact Tables - fct_*): Registram acontecimentos ou eventos de negócio que ocorrem ao longo do tempo (ex: a venda de um produto). Contêm métricas quantitativas (preço, frete, quantidade) e chaves que apontam para as dimensões.
+  - Neste projeto: fct_orders guarda as métricas financeiras de cada pedido.
+* Tabelas Dimensão (Dimension Tables - dim_*): Registram o contexto dos acontecimentos (Quem comprou? O que comprou? Onde?). São tabelas descritivas.
+  - Neste projeto: dim_customers (dados do cliente) e dim_products (dados do produto).
+
+
+5. Como tudo se conecta (O Ecossistema de Desenvolvimento)
+----------------------------------------------------------
+[Fontes de Dados] ➔ [Airflow] ➔ [dbt] ➔ [Banco PostgreSQL] ➔ [FastAPI (Backend)] ➔ [React (Frontend)]
+                                                 ^
+                                            [pgvector + LLM]
+
+* A. Orquestração com Apache Airflow
+  O Airflow é o "maestro". Ele garante que as tarefas aconteçam na ordem certa e no horário programado. A nossa DAG (dag_pipeline_olist.py):
+  1. Checa se os arquivos CSV chegaram na pasta.
+  2. Roda o script python de Ingestão para carregar os dados brutos no banco (Bronze).
+  3. Executa o comando dbt run para transformar os dados (Silver ➔ Gold).
+  4. Executa dbt test para verificar a qualidade do dado final.
+
+* B. Backend com FastAPI (Python)
+  É a API que serve os dados para o frontend. Ele implementa:
+  - Repository Pattern: Separa a lógica de consultas SQL (kpi_repository.py) da lógica de regras de negócio.
+  - Cache em Memória: Guarda os KPIs calculados por alguns minutos para evitar ficar consultando o banco repetidamente, tornando o painel extremamente rápido.
+
+* C. Assistente IA Híbrido (LangChain + pgvector)
+  O assistente de IA responde a perguntas sobre os dados usando duas técnicas:
+  1. Text-to-SQL: O modelo de IA (LLM) lê a pergunta em português, olha o schema do banco e gera a query SQL equivalente. O FastAPI executa essa query e a IA traduz o resultado de volta em texto legível.
+  2. Busca Semântica Vetorial (pgvector): Transforma textos de produtos em vetores matemáticos (embeddings). O banco armazena esses vetores e permite buscar produtos semelhantes usando distâncias matemáticas (cosseno), permitindo buscas como "móveis confortáveis para escritório" mesmo sem conter as palavras exatas nas tabelas normais.
+
+* D. Frontend com React 19 & Vite
+  O dashboard consome a API do FastAPI para renderizar cards de KPI e gráficos dinâmicos (Recharts). Aplicamos melhorias para:
+  - Limpar caracteres brutos de markdown (removendo asteriscos da IA).
+  - Facilitar a leitura exibindo nomes de produtos reais no gráfico.
+  - Estilizar seletores e inputs com variáveis CSS modernas (suporte nativo a dark mode).
+
+* E. Infraestrutura moderna (Docker & CI/CD)
+  - Docker: Garante que qualquer pessoa possa rodar o projeto com um comando (docker compose up), subindo o banco PostgreSQL (com a extensão de vetores ativada), o Airflow, o Backend e o Frontend sem precisar instalar nada na máquina local.
+  - GitHub Actions: Roda testes e valida o estilo de formatação do código a cada atualização enviada para a branch principal, garantindo que o código em produção nunca quebre.

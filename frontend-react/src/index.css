@@ -112,3 +112,32 @@ body { background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; 
 pre, code { font-family: 'Fira Code', monospace !important; }
 pre { background: rgba(0,0,0,.5) !important; border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 10px;
   padding: .9rem 1rem; font-size: .79rem; overflow-x: auto; color: #34d399; }
+
+/* ── Custom Styling for Select dropdowns ── */
+select {
+  background: var(--glass2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: .35rem 1.8rem .35rem .75rem;
+  font-size: .84rem;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  transition: all .15s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right .6rem center;
+  background-size: .85em;
+}
+
+select:hover, select:focus {
+  border-color: var(--border-hv);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
+}
+
+select option {
+  background: var(--solid);
+  color: var(--text);
+}

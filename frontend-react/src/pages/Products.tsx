@@ -3,7 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { useKPIs } from '@/hooks/useKPIs'
 import { ChartCard, CustomTooltip } from '@/components/ChartCard'
 import { PageHeader, Loader, ErrorMsg } from './Dashboard'
-import { COLORS, PRODUCT_COLORS, fmt } from '@/lib/utils'
+import { COLORS, PRODUCT_COLORS, fmt, formatCategory } from '@/lib/utils'
 
 export function Products() {
   const { data, loading, error } = useKPIs()
@@ -14,9 +14,13 @@ export function Products() {
 
   const produtos = (data.top_produtos ?? []).slice(0, topN).map(p => ({
     ...p,
-    nome: p.nome ?? `${p.categoria || 'sem_categoria'} #${p.product_id.slice(0, 6)}`,
+    nome: p.nome ?? `Produto #${p.product_id.slice(0, 6)}`,
+    categoria: formatCategory(p.categoria),
   }))
-  const categorias = (data.top_categorias ?? []).slice(0, topN)
+  const categorias = (data.top_categorias ?? []).slice(0, topN).map(c => ({
+    ...c,
+    categoria: formatCategory(c.categoria),
+  }))
 
   return (
     <div>
@@ -117,7 +121,7 @@ export function Products() {
                   <td className="py-2 px-3 flex items-center gap-2" style={{ fontSize:'.84rem' }}>
                     <div className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                       style={{ background: PRODUCT_COLORS[i % PRODUCT_COLORS.length] }} />
-                    <span>{r.categoria}</span>
+                    <span>{formatCategory(r.categoria)}</span>
                   </td>
                   <td className="py-2 px-3 font-semibold" style={{ color: PRODUCT_COLORS[i % PRODUCT_COLORS.length], fontSize:'.84rem' }}>
                     {fmt.currency(r.faturamento)}

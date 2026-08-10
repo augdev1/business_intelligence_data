@@ -8,7 +8,7 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 
 # URL padrão do banco de dados
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://vendas_user:vendas_password@localhost:5432/vendas_db")
@@ -18,6 +18,13 @@ if DATABASE_URL.startswith("sqlite"):
 else:
     DATABASE_URL_PG = DATABASE_URL.replace("postgresql://", "postgresql+pg8000://") if "postgresql+pg8000" not in DATABASE_URL else DATABASE_URL
     try:
+        import socket
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(0.5)
+        res = sock.connect_ex(('localhost', 5432))
+        sock.close()
+        if res != 0:
+            raise ConnectionError("PostgreSQL não acessível em localhost:5432")
         test_engine = create_engine(DATABASE_URL_PG, pool_pre_ping=True)
         with test_engine.connect() as conn:
             pass

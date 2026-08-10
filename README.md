@@ -127,6 +127,28 @@ graph TD
 
 ---
 
+## 📅 Período dos Dados & Integridade da Carga
+
+Os dados inseridos no banco de dados cobrem o período de **setembro de 2016 a outubro de 2018**.
+
+### Distribuição Temporal dos Pedidos
+* **Ano 2016:** 329 pedidos (início das operações em setembro de 2016)
+* **Ano 2017:** 45.101 pedidos
+* **Ano 2018:** 54.011 pedidos (até outubro de 2018)
+* **Total:** **99.441 pedidos** (Data inicial: `04/09/2016` | Data final: `17/10/2018`)
+
+### Tabela de Auditoria de Integridade (Carga 1:1 dos CSVs originais)
+
+| Tabela no Banco | Arquivo CSV de Origem | Linhas Ingeridas | Linhas no CSV | Status de Integridade |
+| :--- | :--- | :--- | :--- | :--- |
+| `customers` | `olist_customers_dataset.csv` | **99.441** | 99.441 | ✅ 100% Integra |
+| `products` | `olist_products_dataset.csv` | **32.951** | 32.951 | ✅ 100% Integra |
+| `orders` | `olist_orders_dataset.csv` | **99.441** | 99.441 | ✅ 100% Integra |
+| `order_items` | `olist_order_items_dataset.csv` | **112.650** | 112.650 | ✅ 100% Integra |
+| `order_payments` | `olist_order_payments_dataset.csv` | **103.886** | 103.886 | ✅ 100% Integra |
+
+---
+
 ## 🚀 Como Executar o Projeto Localmente
 
 ### Opção A: Execução Conteinerizada Única (Recomendada)

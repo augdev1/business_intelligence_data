@@ -576,6 +576,29 @@ Após aprovação desta arquitetura, os seguintes passos serão implementados:
 
 ---
 
-**Documento criado em:** 2026-06-03  
-**Versão:** 1.0  
-**Status:** Aguardando aprovação da arquitetura
+## 10. Auditoria de Carga & Cobertura Temporal
+
+### 10.1 Cobertura Temporal dos Dados Carregados
+O banco de dados cobre pedidos realizados entre **04/09/2016** e **17/10/2018**.
+A distribuição de pedidos (`orders`) por ano é a seguinte:
+- **2016**: 329 pedidos (início da operação)
+- **2017**: 45.101 pedidos
+- **2018**: 54.011 pedidos
+- **Total**: 99.441 pedidos
+
+### 10.2 Tabela de Integridade e Auditoria (CSV vs Banco de Dados)
+A integridade da carga foi auditada comparando a contagem de linhas do banco de dados SQLite com os arquivos CSV originais da pasta `data/raw/`, confirmando integridade de 100%:
+
+| Tabela | Arquivo CSV de Origem | Linhas no Banco (DB) | Linhas no CSV | Status de Integridade |
+| :--- | :--- | :--- | :--- | :--- |
+| `customers` | `olist_customers_dataset.csv` | **99.441** | 99.441 | ✅ 100% Integra (Match) |
+| `products` | `olist_products_dataset.csv` | **32.951** | 32.951 | ✅ 100% Integra (Match) |
+| `orders` | `olist_orders_dataset.csv` | **99.441** | 99.441 | ✅ 100% Integra (Match) |
+| `order_items` | `olist_order_items_dataset.csv` | **112.650** | 112.650 | ✅ 100% Integra (Match) |
+| `order_payments` | `olist_order_payments_dataset.csv` | **103.886** | 103.886 | ✅ 100% Integra (Match) |
+
+---
+
+**Documento atualizado em:** 2026-08-10  
+**Versão:** 2.0  
+**Status:** Carga de dados validada e auditada com 100% de sucesso.

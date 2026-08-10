@@ -27,6 +27,43 @@ function SqlExpander({ sql }: { sql: string }) {
   )
 }
 
+function FormatMessage({ text }: { text: string }) {
+  const lines = text.split('\n')
+  return (
+    <div className="space-y-1 text-sm leading-relaxed" style={{ color: 'var(--text)' }}>
+      {lines.map((line, lineIdx) => {
+        let cleanLine = line
+        let isBullet = false
+
+        if (line.trim().startsWith('* ')) {
+          cleanLine = line.trim().replace(/^\*\s+/, '• ')
+          isBullet = true
+        } else if (line.trim().startsWith('- ')) {
+          cleanLine = line.trim().replace(/^-\s+/, '• ')
+          isBullet = true
+        }
+
+        const parts = cleanLine.split(/\*\*([^*]+)\*\*/g)
+
+        return (
+          <div key={lineIdx} className={`${isBullet ? 'pl-4 py-0.5' : ''}`}>
+            {parts.map((part, partIdx) => {
+              if (partIdx % 2 === 1) {
+                return (
+                  <strong key={partIdx} className="font-semibold text-emerald-400" style={{ color: 'var(--acc)' }}>
+                    {part}
+                  </strong>
+                )
+              }
+              return part
+            })}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 export function AIAssistant() {
   const [msgs,    setMsgs]    = useState<Msg[]>([])
   const [input,   setInput]   = useState('')
@@ -93,7 +130,7 @@ export function AIAssistant() {
                   <div className="flex items-center gap-1.5 mb-2" style={{ color:'var(--sub)', fontSize:'.7rem' }}>
                     <span>🤖</span> <span className="font-semibold uppercase tracking-wide">Assistente IA</span>
                   </div>
-                  <p style={{ whiteSpace:'pre-wrap', margin:0 }}>{m.content}</p>
+                  <FormatMessage text={m.content} />
                   {m.sql && <SqlExpander sql={m.sql} />}
                 </div>
               )}

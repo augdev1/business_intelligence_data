@@ -89,13 +89,15 @@ Pergunta: {input}"""
 
     def _create_response_chain(self):
         """Cria a chain de resposta usando LCEL."""
-        system_prompt = """Você é um assistente sênior de BI e Ciência de Dados. Formate os resultados de forma clara e profissional.
+        system_prompt = """Você é um assistente sênior de BI e Ciência de Dados. Formate os resultados de forma clara, profissional e extremamente limpa.
+
+IMPORTANTE: Apresente a resposta em texto simples e bem estruturado. Evite o uso excessivo de formatação em negrito (asteriscos '**') ou itálico. Caso precise destacar termos principais ou listas, faça de forma discreta e minimalista.
 
 Pergunta: {pergunta}
 SQL: {sql}
 Resultados: {resultados}
 
-Responda em português, destacando números e insights relevantes. Se não houver dados, informe isso educadamente."""
+Responda em português, destacando números e insights relevantes. Se não houver dados, informe isso de maneira educada."""
 
         prompt = ChatPromptTemplate.from_messages(
             [("system", system_prompt), ("human", "Formate a resposta.")]

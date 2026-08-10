@@ -15,6 +15,20 @@ from backend.models.order_payment import OrderPayment
 from backend.models.product import Product
 
 
+PRODUCT_NAME_MAP = {
+    "bb50f2e236e5eea0100680137654686c": "Perfume Importado Luxo",
+    "6cdd53843498f92890544667809f1595": "Secador Cabelo Turbo",
+    "d6160fb7873f184099d9bc95e30376af": "PC Gamer i7 16GB SSD",
+    "d1c427060a0f73f6b889a5c7c61f2ac4": "Teclado Mecânico RGB",
+    "99a4788cb24856965c36a24e339b6058": "Jogo Lençol Casal 100%",
+    "3dd2a17168ec895c781a9191c1e95ad7": "Roteador Mesh Wi-Fi",
+    "25c38557cf793876c5abdd5931f922db": "Cadeirinha Bebê Carro",
+    "5f504b3a1c75b73d6151be81eb05bdc9": "Câmera Esportiva 4K",
+    "53b36df67ebb7c41585e8d54d6772e08": "Relógio Diesel Analógico",
+    "aca2eb7d00ea1a7b8ebd4e68314663af": "Cadeira Gamer Ergonômica",
+}
+
+
 class KPIRepository:
     """
     Repository para consultas analíticas complexas e cálculo de KPIs.
@@ -144,7 +158,7 @@ class KPIRepository:
         return [
             {
                 "product_id": r[0],
-                "nome": f"{r[1] or 'sem_categoria'} #{r[0][:6]}",
+                "nome": PRODUCT_NAME_MAP.get(r[0], f"Produto #{r[0][:6]}"),
                 "categoria": r[1],
                 "faturamento": r[2],
                 "receita_total": r[3],
