@@ -1,6 +1,7 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
+import { useTheme } from '@/context/ThemeContext'
 import { TIER_COLORS } from '@/lib/utils'
 
 interface Tier { label: string; threshold: number; color: string; size: number }
@@ -37,7 +38,24 @@ function OrbitalDots({ color, radius = 18 }: { color: string; radius?: number })
 }
 
 export function GradientSelector({ currentValue }: { currentValue: number }) {
-  const reached    = TIERS.filter(t => currentValue >= t.threshold).length
+  const { theme } = useTheme()
+  const isTurquoise = theme === 'light'
+
+  const tierColors = isTurquoise ? [
+    '#2dd4bf', // Teal 400
+    '#14b8a6', // Teal 500
+    '#0d9488', // Teal 600
+    '#0f766e', // Teal 700
+  ] : TIER_COLORS
+
+  const tiers = [
+    { label: 'R$10K',  threshold: 10_000,     color: tierColors[0], size: 12 },
+    { label: 'R$100K', threshold: 100_000,    color: tierColors[1], size: 14 },
+    { label: 'R$1M',   threshold: 1_000_000,  color: tierColors[2], size: 16 },
+    { label: 'R$10M+', threshold: 10_000_000, color: tierColors[3], size: 18 },
+  ]
+
+  const reached    = tiers.filter(t => currentValue >= t.threshold).length
   const containerRef = useRef<HTMLDivElement>(null)
   const circleRefs   = useRef<(HTMLDivElement | null)[]>([])
   const [gradPos, setGradPos] = useState<{ x: number; y: number } | null>(null)
@@ -53,26 +71,29 @@ export function GradientSelector({ currentValue }: { currentValue: number }) {
     }
   }, [reached])
 
-  const pct = Math.round((reached / TIERS.length) * 100)
+  const pct = Math.round((reached / tiers.length) * 100)
 
   return (
     <div ref={containerRef}
       className="glass-card rounded-[18px] p-5 mb-4 relative overflow-hidden">
       {gradPos && (
         <div className="absolute inset-0 pointer-events-none"
-          style={{ background: `radial-gradient(circle at ${gradPos.x}px ${gradPos.y + 300}px, ${TIERS[reached-1]?.color}18 0%, transparent 65%)` }} />
+          style={{ background: `radial-gradient(circle at ${gradPos.x}px ${gradPos.y + 300}px, ${tiers[reached-1]?.color}18 0%, transparent 65%)` }} />
       )}
 
       <div className="flex justify-between items-baseline mb-4 relative">
         <p className="section-label">Tiers de Receita</p>
         <span className="text-[.64rem] font-bold px-2.5 py-0.5 rounded-full text-white"
-          style={{ background: 'linear-gradient(135deg,var(--acc),var(--acc2))' }}>
-          {reached}/{TIERS.length} ALCANÇADOS
+          style={{ 
+            background: isTurquoise ? 'linear-gradient(135deg,#2dd4bf,#14b8a6)' : 'linear-gradient(135deg,#6366f1,#8b5cf6)', 
+            boxShadow: isTurquoise ? '0 2px 10px rgba(45,212,191,0.2)' : '0 2px 10px rgba(99,102,241,0.2)' 
+          }}>
+          {reached}/{tiers.length} ALCANÇADOS
         </span>
       </div>
 
       <div className="gs-track flex items-center justify-center gap-0 mb-3">
-        {TIERS.map((t, i) => {
+        {tiers.map((t, i) => {
           const active = i < reached
           return (
             <div key={t.label} className="flex items-center gap-0">
@@ -80,19 +101,19 @@ export function GradientSelector({ currentValue }: { currentValue: number }) {
                 className="relative flex-shrink-0 rounded-full transition-all duration-300"
                 style={{
                   width: t.size, height: t.size,
-                  background: active ? t.color : '#151e18',
+                  background: active ? t.color : '#18181b',
                   boxShadow: active ? `0 0 18px ${t.color}55, 0 0 38px ${t.color}28` : 'none',
                 }}>
                 {active && <OrbitalDots color={t.color} radius={t.size + 6} />}
               </div>
-              {i < TIERS.length - 1 && (
+              {i < tiers.length - 1 && (
                 <div className="rounded-full flex-1 mx-1"
                   style={{
                     height: 2 + i,
                     minWidth: 36, maxWidth: 68,
                     background: i < reached - 1
-                      ? `linear-gradient(90deg,${t.color},${TIERS[i+1].color})`
-                      : '#151e18',
+                      ? `linear-gradient(90deg,${t.color},${tiers[i+1].color})`
+                      : '#18181b',
                   }} />
               )}
             </div>
@@ -101,7 +122,7 @@ export function GradientSelector({ currentValue }: { currentValue: number }) {
       </div>
 
       <div className="flex">
-        {TIERS.map((t, i) => (
+        {tiers.map((t, i) => (
           <div key={t.label} className="flex-1 text-center"
             style={{ fontSize: '.67rem', fontWeight: 700, letterSpacing: '.04em',
               color: i < reached ? t.color : '#475569' }}>
@@ -113,7 +134,7 @@ export function GradientSelector({ currentValue }: { currentValue: number }) {
       <div className="mt-3 h-[3px] rounded-full overflow-hidden"
         style={{ background: 'rgba(255,255,255,.06)' }}>
         <motion.div className="h-full rounded-full"
-          style={{ background: `linear-gradient(90deg,${TIER_COLORS[0]},${TIER_COLORS[3]})` }}
+          style={{ background: `linear-gradient(90deg,${tierColors[0]},${tierColors[3]})` }}
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
           transition={{ duration: .8, ease: 'easeOut' }} />

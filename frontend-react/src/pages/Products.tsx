@@ -30,7 +30,7 @@ export function Products() {
         <span className="section-label">Exibir top</span>
         <input type="range" min={5} max={20} step={5} value={topN} onChange={e => setTopN(+e.target.value)}
           className="w-32" />
-        <span className="text-sm font-bold" style={{ color:'var(--acc)' }}>{topN}</span>
+        <span className="text-sm font-bold" style={{ color:'#6366f1' }}>{topN}</span>
       </div>
 
       <div className="grid grid-cols-2 gap-4 mb-4">

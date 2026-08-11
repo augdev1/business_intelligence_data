@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { Send, Trash2, ChevronDown, ChevronUp } from 'lucide-react'
 import { api, type IAResponse } from '@/lib/api'
+import { useTheme } from '@/context/ThemeContext'
 import { PageHeader } from './Dashboard'
 
 interface Msg { role: 'user'|'assistant'; content: string; sql?: string; dados?: unknown[] }
@@ -28,6 +29,8 @@ function SqlExpander({ sql }: { sql: string }) {
 }
 
 function FormatMessage({ text }: { text: string }) {
+  const { theme } = useTheme()
+  const isTurquoise = theme === 'light'
   const lines = text.split('\n')
   return (
     <div className="space-y-1 text-sm leading-relaxed" style={{ color: 'var(--text)' }}>
@@ -50,7 +53,7 @@ function FormatMessage({ text }: { text: string }) {
             {parts.map((part, partIdx) => {
               if (partIdx % 2 === 1) {
                 return (
-                  <strong key={partIdx} className="font-semibold text-emerald-400" style={{ color: 'var(--acc)' }}>
+                  <strong key={partIdx} className="font-semibold text-indigo-400" style={{ color: isTurquoise ? '#99f6e4' : '#a5b4fc' }}>
                     {part}
                   </strong>
                 )
@@ -65,6 +68,8 @@ function FormatMessage({ text }: { text: string }) {
 }
 
 export function AIAssistant() {
+  const { theme } = useTheme()
+  const isTurquoise = theme === 'light'
   const [msgs,    setMsgs]    = useState<Msg[]>([])
   const [input,   setInput]   = useState('')
   const [loading, setLoading] = useState(false)
@@ -121,7 +126,7 @@ export function AIAssistant() {
             <div className={`max-w-[82%] ${m.role === 'assistant' ? 'w-full' : ''}`}>
               {m.role === 'user' ? (
                 <div className="rounded-[14px] rounded-tr-sm px-4 py-2.5 text-sm font-medium"
-                  style={{ background:'linear-gradient(135deg,var(--acc),var(--acc2))', color:'#fff' }}>
+                  style={{ background: isTurquoise ? 'linear-gradient(135deg,#2dd4bf,#0d9488)' : 'linear-gradient(135deg,#6366f1,#8b5cf6)', color:'#fff' }}>
                   {m.content}
                 </div>
               ) : (
@@ -144,7 +149,7 @@ export function AIAssistant() {
               <div className="flex gap-1">
                 {[0,1,2].map(i => (
                   <div key={i} className="w-1.5 h-1.5 rounded-full animate-bounce"
-                    style={{ background:'var(--acc)', animationDelay:`${i*.15}s` }} />
+                    style={{ background: isTurquoise ? '#2dd4bf' : '#6366f1', animationDelay:`${i*.15}s` }} />
                 ))}
               </div>
               Analisando dados...
@@ -169,7 +174,7 @@ export function AIAssistant() {
         <button onClick={() => send(input)} disabled={loading || !input.trim()}
           className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all"
           style={{
-            background: input.trim() && !loading ? 'linear-gradient(135deg,var(--acc),var(--acc2))' : 'var(--border)',
+            background: input.trim() && !loading ? (isTurquoise ? 'linear-gradient(135deg,#2dd4bf,#0d9488)' : 'linear-gradient(135deg,#6366f1,#8b5cf6)') : 'var(--border)',
             cursor: input.trim() && !loading ? 'pointer' : 'not-allowed',
           }}>
           <Send size={15} color="white" />

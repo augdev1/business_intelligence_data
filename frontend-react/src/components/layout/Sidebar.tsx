@@ -18,16 +18,22 @@ function NavIcon({ color, children }: { color: string; children: React.ReactNode
   )
 }
 
-const NAV_ICONS = [
-  'linear-gradient(135deg,#10b981,#059669)',
-  'linear-gradient(135deg,#34d399,#10b981)',
-  'linear-gradient(135deg,#059669,#047857)',
-  'linear-gradient(135deg,#4ade80,#16a34a)',
-]
-
 export function Sidebar() {
   const { theme, toggle } = useTheme()
   const today = new Date().toLocaleDateString('pt-BR', { weekday:'short', day:'2-digit', month:'2-digit', year:'numeric' })
+  const isTurquoise = theme === 'light'
+
+  const navIcons = isTurquoise ? [
+    'linear-gradient(135deg,#2dd4bf,#14b8a6)',
+    'linear-gradient(135deg,#0d9488,#0f766e)',
+    'linear-gradient(135deg,#22d3ee,#0891b2)',
+    'linear-gradient(135deg,#34d399,#059669)',
+  ] : [
+    'linear-gradient(135deg,#6366f1,#4f46e5)',
+    'linear-gradient(135deg,#8b5cf6,#7c3aed)',
+    'linear-gradient(135deg,#ec4899,#db2777)',
+    'linear-gradient(135deg,#06b6d4,#0891b2)',
+  ]
 
   return (
     <aside className="sidebar fixed left-0 top-0 h-screen w-[258px] flex flex-col z-50 overflow-y-auto overflow-x-hidden">
@@ -36,7 +42,10 @@ export function Sidebar() {
       <div className="px-3 pt-5 pb-2">
         <div className="flex items-center gap-2.5 mb-5">
           <div className="w-9 h-9 flex-shrink-0 rounded-[10px] flex items-center justify-center text-lg"
-            style={{ background:'linear-gradient(135deg,#10b981,#059669)', boxShadow:'0 4px 16px rgba(16,185,129,.4)' }}>
+            style={{ 
+              background: isTurquoise ? 'linear-gradient(135deg,#2dd4bf,#0d9488)' : 'linear-gradient(135deg,#6366f1,#8b5cf6)', 
+              boxShadow: isTurquoise ? '0 4px 16px rgba(45,212,191,.3)' : '0 4px 16px rgba(99,102,241,.3)' 
+            }}>
             📊
           </div>
           <div>
@@ -51,12 +60,16 @@ export function Sidebar() {
         <div className="flex items-center gap-2.5 rounded-xl p-3 mb-5"
           style={{ background:'rgba(255,255,255,.04)', border:'1px solid rgba(255,255,255,.07)' }}>
           <div className="w-8 h-8 flex-shrink-0 rounded-full flex items-center justify-center text-sm"
-            style={{ background:'linear-gradient(135deg,#10b981,#059669)' }}>👤</div>
+            style={{ background: isTurquoise ? 'linear-gradient(135deg,#2dd4bf,#0d9488)' : 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}>👤</div>
           <div className="flex-1 min-w-0">
             <div className="text-[#e2e8f0] text-[.78rem] font-semibold">Bem-vindo!</div>
             <div className="text-[.62rem] mt-px truncate" style={{ color:'rgba(255,255,255,.28)' }}>{today}</div>
           </div>
-          <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background:'#10b981', boxShadow:'0 0 6px #10b981' }} />
+          <div className="w-2 h-2 rounded-full flex-shrink-0" 
+            style={{ 
+              background: isTurquoise ? '#2dd4bf' : '#6366f1', 
+              boxShadow: isTurquoise ? '0 0 6px #2dd4bf' : '0 0 6px #6366f1' 
+            }} />
         </div>
 
         {/* Nav label */}
@@ -69,7 +82,7 @@ export function Sidebar() {
         {NAV.map(({ to, icon: Icon, label }, i) => (
           <NavLink key={to} to={to} end={to === '/'}
             className={({ isActive }) => `nav-item mb-0.5 ${isActive ? 'active' : ''}`}>
-            <NavIcon color={NAV_ICONS[i]}>
+            <NavIcon color={navIcons[i]}>
               <Icon size={13} color="white" />
             </NavIcon>
             {label}
@@ -87,14 +100,17 @@ export function Sidebar() {
           onMouseEnter={e=>{(e.target as HTMLElement).style.background='rgba(255,255,255,.11)'}}
           onMouseLeave={e=>{(e.target as HTMLElement).style.background='rgba(255,255,255,.05)'}}>
           {theme === 'dark' ? <Sun size={13}/> : <Moon size={13}/>}
-          {theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}
+          Alterar Tema
         </button>
 
         {/* Help card */}
         <div className="rounded-[14px] p-4 relative overflow-hidden"
-          style={{ background:'linear-gradient(135deg,rgba(16,185,129,.35),rgba(5,150,105,.3))', border:'1px solid rgba(16,185,129,.35)' }}>
-          <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full" style={{ background:'rgba(255,255,255,.06)' }} />
-          <div className="absolute -bottom-6 -left-2 w-14 h-14 rounded-full" style={{ background:'rgba(255,255,255,.04)' }} />
+          style={{ 
+            background: isTurquoise ? 'linear-gradient(135deg,rgba(45,212,191,.15),rgba(13,148,136,.1))' : 'linear-gradient(135deg,rgba(99,102,241,.15),rgba(139,92,246,.1))', 
+            border: isTurquoise ? '1px solid rgba(45,212,191,.2)' : '1px solid rgba(99,102,241,.2)' 
+          }}>
+          <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full" style={{ background:'rgba(255,255,255,.04)' }} />
+          <div className="absolute -bottom-6 -left-2 w-14 h-14 rounded-full" style={{ background:'rgba(255,255,255,.02)' }} />
           <div className="relative">
             <div className="text-base mb-1">💡</div>
             <div className="text-white text-[.76rem] font-bold mb-1">Precisa de ajuda?</div>
@@ -103,7 +119,10 @@ export function Sidebar() {
             </div>
             <NavLink to="/assistente"
               className="block text-center text-white text-[.66rem] font-bold py-1.5 rounded-[8px] tracking-[.06em]"
-              style={{ background:'rgba(16,185,129,.4)', border:'1px solid rgba(16,185,129,.5)' }}>
+              style={{ 
+                background: isTurquoise ? 'rgba(45,212,191,.3)' : 'rgba(99,102,241,.3)', 
+                border: isTurquoise ? '1px solid rgba(45,212,191,.4)' : '1px solid rgba(99,102,241,.4)' 
+              }}>
               ASSISTENTE IA →
             </NavLink>
           </div>
