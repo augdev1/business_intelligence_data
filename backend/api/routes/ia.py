@@ -15,15 +15,25 @@ router = APIRouter(prefix="/api/v1/ia", tags=["ia"])
 @router.post("/perguntar", response_model=IAPerguntaResponse)
 def perguntar(request: IAPerguntaRequest, db: Session = Depends(get_db)):
     """
-    Processa uma pergunta em linguagem natural.
+    Processa uma pergunta em linguagem natural usando a engine RAG Híbrida.
 
     Args:
         request: Pergunta do usuário
         db: Sessão do banco de dados
 
     Returns:
-        Resposta da IA com SQL gerado e dados
+        Resposta da IA com SQL gerado, dados e evidências RAG de vetores
     """
     service = IAService(db)
     resultado = service.perguntar(request.pergunta)
     return resultado
+
+
+@router.post("/rag-search", response_model=IAPerguntaResponse)
+def rag_search(request: IAPerguntaRequest, db: Session = Depends(get_db)):
+    """
+    Endpoint dedicado para pesquisa semântica via RAG Híbrido (reviews + produtos).
+    """
+    service = IAService(db)
+    return service.perguntar(request.pergunta)
+

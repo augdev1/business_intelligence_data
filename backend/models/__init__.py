@@ -8,5 +8,15 @@ from backend.models.order import Order
 from backend.models.order_item import OrderItem
 from backend.models.order_payment import OrderPayment
 from backend.models.product_embedding import ProductEmbedding
+from backend.models.review_embedding import ReviewEmbedding
 
-__all__ = ["Customer", "Product", "Order", "OrderItem", "OrderPayment", "ProductEmbedding"]
+__all__ = [
+    "Customer",
+    "Product",
+    "Order",
+    "OrderItem",
+    "OrderPayment",
+    "ProductEmbedding",
+    "ReviewEmbedding",
+]
+

@@ -68,10 +68,14 @@ class IAPerguntaRequest(BaseModel):
 
 
 class IAPerguntaResponse(BaseModel):
-    """Schema para resposta da IA."""
+    """Schema para resposta da IA com suporte a RAG."""
 
     sucesso: bool
     pergunta: str
     resposta: str
-    sql: Optional[str]
-    dados: Optional[list]
+    mode: Optional[str] = "hybrid"
+    sql: Optional[str] = None
+    dados: Optional[list] = None
+    reviews_evidences: Optional[List[dict]] = None
+    products_evidences: Optional[List[dict]] = None
+

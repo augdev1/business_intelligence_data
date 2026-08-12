@@ -48,7 +48,7 @@ def get_db():
 
 def init_db():
     """Inicializa o banco de dados criando todas as tabelas e índices de alta performance."""
-    from backend.models import Customer, Product, Order, OrderItem, OrderPayment, ProductEmbedding
+    from backend.models import Customer, Product, Order, OrderItem, OrderPayment, ProductEmbedding, ReviewEmbedding
     from sqlalchemy import text
 
     Base.metadata.create_all(bind=engine)

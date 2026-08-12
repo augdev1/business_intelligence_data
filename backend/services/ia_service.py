@@ -35,79 +35,46 @@ class IAService:
 
     def perguntar(self, pergunta: str) -> Dict[str, Any]:
         """
-        Processa uma pergunta em linguagem natural usando busca vetorial ou Text-to-SQL.
+        Processa uma pergunta em linguagem natural usando a engine RAG Híbrida.
         """
         try:
-            logger.info(f"Processando pergunta: {pergunta}")
+            logger.info(f"Processando pergunta via RAG Híbrido: {pergunta}")
 
             if not self.sql_chain:
                 return {
                     "sucesso": False,
                     "pergunta": pergunta,
-                    "resposta": "IA não configurada. Verifique as variáveis de ambiente.",
+                    "resposta": "IA não configurada. Verifique as variáveis de ambiente (GROQ_API_KEY / OPENAI_API_KEY).",
+                    "mode": "error",
                     "sql": None,
                     "dados": None,
+                    "reviews_evidences": [],
+                    "products_evidences": [],
                 }
 
-            # Detecção de intenção de busca por similaridade semântica
-            keywords_vetoriais = [
-                "similar",
-                "parecido",
-                "semelhante",
-                "recomendação",
-                "vetor",
-                "embedding",
-            ]
-            is_semantic_search = any(kw in pergunta.lower() for kw in keywords_vetoriais)
-
-            if is_semantic_search:
-                logger.info("Executando busca por similaridade semântica via pgvector...")
-                resultados = self.sql_chain.vector_semantic_search(pergunta, self.db, limit=5)
-                sql_executado = (
-                    "SELECT * FROM product_embeddings ORDER BY embedding <=> :vector LIMIT 5;"
-                )
-                resposta = self.sql_chain.format_response(pergunta, sql_executado, resultados)
-
-                return {
-                    "sucesso": True,
-                    "pergunta": pergunta,
-                    "resposta": resposta,
-                    "sql": sql_executado,
-                    "dados": resultados,
-                }
-
-            # Caso padrão: Text-to-SQL Relacional
-            sql = self.sql_chain.generate_sql(pergunta)
-
-            try:
-                resultados = self.repository.execute_raw_query(sql)
-                logger.info(f"Query executada com sucesso: {len(resultados)} resultados")
-            except Exception as e:
-                logger.error(f"Erro ao executar SQL: {str(e)}")
-                return {
-                    "sucesso": False,
-                    "pergunta": pergunta,
-                    "resposta": f"Erro ao executar query: {str(e)}",
-                    "sql": sql,
-                    "dados": None,
-                }
-
-            resposta = self.sql_chain.format_response(pergunta, sql, resultados)
+            rag_result = self.sql_chain.rag_hybrid_query(pergunta, self.db)
 
             return {
                 "sucesso": True,
                 "pergunta": pergunta,
-                "resposta": resposta,
-                "sql": sql,
-                "dados": resultados,
+                "resposta": rag_result.get("resposta", ""),
+                "mode": rag_result.get("mode", "hybrid"),
+                "sql": rag_result.get("sql"),
+                "dados": rag_result.get("sql_results"),
+                "reviews_evidences": rag_result.get("reviews_evidences"),
+                "products_evidences": rag_result.get("products_evidences"),
             }
 
         except Exception as e:
-            logger.error(f"Erro ao processar pergunta: {str(e)}")
+            logger.error(f"Erro ao processar pergunta via RAG: {str(e)}")
             return {
                 "sucesso": False,
                 "pergunta": pergunta,
                 "resposta": f"Erro ao processar pergunta: {str(e)}",
+                "mode": "error",
                 "sql": None,
                 "dados": None,
+                "reviews_evidences": [],
+                "products_evidences": [],
             }
+

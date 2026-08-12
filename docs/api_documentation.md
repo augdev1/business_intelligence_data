@@ -298,11 +298,11 @@ GET /api/v1/indicadores/periodo?data_inicio=2024-01-01&data_fim=2024-12-31
 }
 ```
 
-### IA
+### IA & RAG Híbrido
 
-#### Perguntar
+#### Perguntar (RAG Híbrido)
 
-Processa uma pergunta em linguagem natural.
+Processa uma pergunta em linguagem natural combinando busca vetorial pgvector e Text-to-SQL.
 
 ```http
 POST /api/v1/ia/perguntar
@@ -312,7 +312,7 @@ Content-Type: application/json
 **Body:**
 ```json
 {
-  "pergunta": "Qual produto vendeu mais?"
+  "pergunta": "O que os clientes comentam sobre os atrasos na entrega?"
 }
 ```
 
@@ -320,17 +320,39 @@ Content-Type: application/json
 ```json
 {
   "sucesso": true,
-  "pergunta": "Qual produto vendeu mais?",
-  "resposta": "O produto mais vendido é Produto A, com 500 unidades vendidas.",
-  "sql": "SELECT produto, SUM(quantidade) as total_quantidade FROM vendas GROUP BY produto ORDER BY total_quantidade DESC LIMIT 1;",
-  "dados": [
+  "pergunta": "O que os clientes comentam sobre os atrasos na entrega?",
+  "resposta": "Os clientes expressam insatisfação principalmente com prazos de entrega excedidos pelos Correios...",
+  "mode": "vector_rag",
+  "sql": null,
+  "dados": null,
+  "reviews_evidences": [
     {
-      "produto": "Produto A",
-      "total_quantidade": 500
+      "review_id": "rev_001",
+      "score": 1,
+      "comment_text": "O produto demorou mais de 20 dias para chegar.",
+      "similarity_score": 0.9234
     }
-  ]
+  ],
+  "products_evidences": []
 }
 ```
+
+#### RAG Search Dedicado
+
+Endpoint especializado para pesquisas vetoriais diretas.
+
+```http
+POST /api/v1/ia/rag-search
+Content-Type: application/json
+```
+
+**Body:**
+```json
+{
+  "pergunta": "Produtos de decoração com boas avaliações"
+}
+```
+
 
 ## Documentação Interativa
 

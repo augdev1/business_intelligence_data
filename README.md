@@ -36,9 +36,10 @@ O sistema implementa as melhores práticas de mercado: **Data Transformation com
   3. `task_dbt_run`: Construção das dimensões e fatos via dbt.
   4. `task_dbt_test`: Execução dos testes de qualidade de dados.
 
-### 4. 🧠 AI Híbrida: Text-to-SQL + Busca Semântica (`pgvector` + LangChain)
-- **Engine Vetorial**: Armazenamento de embeddings de 1536 dimensões na tabela `product_embeddings`.
-- **Consultas Híbridas**: LangChain LCEL combinando geração de SQL dinâmico (Text-to-SQL via Groq Llama-3.3-70b) e busca por similaridade de cosseno (`ORDER BY embedding <=> :vector`).
+### 4. 🧠 AI Híbrida & RAG: Text-to-SQL + Busca Vetorial de Reviews & Produtos (`pgvector` + LangChain)
+- **Engine Vetorial Dupla**: Armazenamento de embeddings de 1536 dimensões nas tabelas `product_embeddings` (catálogo) e `review_embeddings` (análise de comentários de clientes).
+- **RAG Híbrido Conversacional**: LangChain LCEL combinando geração de SQL dinâmico (Text-to-SQL via Groq Llama-3.3-70b / OpenAI) e busca por similaridade semântica de cosseno (`ORDER BY embedding <=> :vector`).
+- **Recuperação de Evidências no Frontend**: Exibição de trechos de avaliações reais de clientes com notas (1 a 5 ⭐) e porcentagem de similaridade vetorial diretamente no Dashboard React 19.
 
 ### 5. ⚙️ Esteira CI/CD Automatizada com GitHub Actions
 - **Workflow em `.github/workflows/ci.yml`**: Executa a cada `push` ou `pull_request` na branch `main`:
@@ -59,15 +60,15 @@ graph TD
     D -->|Star Schema Transformation| E[dbt Marts: dim_customers, dim_products, fct_orders]
     E -->|Task 3: dbt test| F[Qualidade de Dados Validada]
     
-    C -->|Vector Embeddings| G[tabela product_embeddings]
+    C -->|Vector Embeddings| G[tabelas product_embeddings & review_embeddings]
     
     E --> H[Service Layer + In-Memory Cache TTL 5m]
-    G --> I[LangChain Híbrido Text-to-SQL + Vector Search]
+    G --> I[LangChain RAG Híbrido Text-to-SQL + Vector Search]
     
-    H --> J[FastAPI REST API /api/v1]
+    H --> J[FastAPI REST API /api/v1/kpi e /api/v1/ia]
     I --> J
     
-    J --> K[React 19 + Vite Dashboard]
+    J --> K[React 19 + Vite RAG Dashboard]
     
     subgraph CI/CD Pipeline
         L[GitHub Actions Workflow] -->|Check| M[Black Linter]
