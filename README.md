@@ -23,11 +23,12 @@ O sistema implementa as melhores práticas de mercado: **Data Transformation com
 - **Data Quality Contracts (`schema.yml`)**: Testes automáticos validando integridade referencial (`relationships`), unicidade (`unique`) e obrigatoriedade (`not_null`).
 
 ### 2. 🐳 Conteinerização Enterprise com Docker Compose
-- **Orquestração Única (`docker compose up`)**:
-  - `db`: PostgreSQL 16 com a extensão **`pgvector`** pré-instalada (`ankane/pgvector`).
+- **Orquestração Automatizada (`docker compose up --build -d`)**:
+  - `db`: PostgreSQL 16 com a extensão **`pgvector`** pré-instalada (`pgvector/pgvector:pg16`).
   - `backend`: API REST FastAPI com suporte a conexões assíncronas e fallback DB.
   - `frontend`: Dashboard SPA React 19 + Vite servido via Nginx otimizado.
-  - `airflow`: Servidor e Scheduler do Apache Airflow rodando dags integradas.
+  - `airflow`: Servidor e Scheduler oficial do Apache Airflow (v2.9.3) com DAGs integradas.
+  - `init-data`: Job automatizado e idempotente de carga inicial, transformações dbt (Star Schema) e geração de embeddings vetoriais (`pgvector`).
 
 ### 3. 🌀 Orquestração de Pipelines com Apache Airflow
 - **DAG Automatizada (`dag_pipeline_olist.py`)**:
@@ -175,7 +176,7 @@ docker compose up --build -d
 
 #### 1. Iniciar Banco PostgreSQL com pgvector
 ```bash
-docker run -d --name vendas_db -p 5432:5432 -e POSTGRES_USER=vendas_user -e POSTGRES_PASSWORD=vendas_password -e POSTGRES_DB=vendas_db ankane/pgvector:v0.8.0
+docker run -d --name vendas_db -p 5432:5432 -e POSTGRES_USER=vendas_user -e POSTGRES_PASSWORD=vendas_password -e POSTGRES_DB=vendas_db pgvector/pgvector:pg16
 ```
 
 #### 2. Povoar Camada Raw e Executar dbt

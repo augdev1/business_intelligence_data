@@ -19,12 +19,17 @@ else:
     DATABASE_URL_PG = DATABASE_URL.replace("postgresql://", "postgresql+pg8000://") if "postgresql+pg8000" not in DATABASE_URL else DATABASE_URL
     try:
         import socket
+        from urllib.parse import urlparse
+        parsed = urlparse(DATABASE_URL)
+        host = parsed.hostname or os.getenv("POSTGRES_HOST", "localhost")
+        port = parsed.port or int(os.getenv("POSTGRES_PORT", 5432))
+
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(0.5)
-        res = sock.connect_ex(('localhost', 5432))
+        sock.settimeout(1.0)
+        res = sock.connect_ex((host, port))
         sock.close()
         if res != 0:
-            raise ConnectionError("PostgreSQL não acessível em localhost:5432")
+            raise ConnectionError(f"PostgreSQL não acessível em {host}:{port}")
         test_engine = create_engine(DATABASE_URL_PG, pool_pre_ping=True)
         with test_engine.connect() as conn:
             pass
