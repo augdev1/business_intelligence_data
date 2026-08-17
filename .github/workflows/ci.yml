@@ -18,13 +18,10 @@ jobs:
           POSTGRES_USER: vendas_user
           POSTGRES_PASSWORD: vendas_password
           POSTGRES_DB: vendas_db
+          POSTGRES_HOST_AUTH_METHOD: trust
         ports:
           - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U vendas_user -d vendas_db"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 5
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - name: Checkout repository
