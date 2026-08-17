@@ -13,7 +13,7 @@ jobs:
 
     services:
       postgres:
-        image: ankane/pgvector:v0.8.0
+        image: pgvector/pgvector:pg16
         env:
           POSTGRES_USER: vendas_user
           POSTGRES_PASSWORD: vendas_password
@@ -21,8 +21,8 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
+          --health-cmd "pg_isready -U vendas_user -d vendas_db"
+          --health-interval 5s
           --health-timeout 5s
           --health-retries 5
 
@@ -34,7 +34,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
 
       - name: Install dependencies
         run: |
