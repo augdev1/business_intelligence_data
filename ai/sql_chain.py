@@ -176,17 +176,21 @@ Responda em português, destacando números e insights relevantes. Se não houve
                     "text_content": getattr(r, "text_content", ""),
                 }
                 if hasattr(r, "review_id"):
-                    item.update({
-                        "review_id": r.review_id,
-                        "order_id": getattr(r, "order_id", None),
-                        "score": getattr(r, "score", None),
-                        "comment_text": getattr(r, "comment_text", None),
-                    })
+                    item.update(
+                        {
+                            "review_id": r.review_id,
+                            "order_id": getattr(r, "order_id", None),
+                            "score": getattr(r, "score", None),
+                            "comment_text": getattr(r, "comment_text", None),
+                        }
+                    )
                 elif hasattr(r, "product_id"):
-                    item.update({
-                        "product_id": r.product_id,
-                        "category_name": getattr(r, "category_name", None),
-                    })
+                    item.update(
+                        {
+                            "product_id": r.product_id,
+                            "category_name": getattr(r, "category_name", None),
+                        }
+                    )
                 results.append(item)
             return results
         except Exception as e:
@@ -275,8 +279,6 @@ Responda em português, destacando números e insights relevantes. Se não houve
             all_reviews = db.query(ReviewEmbedding).limit(1000).all()
             return self._vector_search_python_fallback(query_vector, all_reviews, limit=limit)
 
-
-
     def rag_hybrid_query(self, pergunta: str, db: Session) -> Dict[str, Any]:
         """
         Executa consulta RAG Híbrida: combina busca de vetores em reviews/produtos + geração Text-to-SQL.
@@ -285,7 +287,8 @@ Responda em português, destacando números e insights relevantes. Se não houve
 
         def _normalize(text_str: str) -> str:
             return "".join(
-                c for c in unicodedata.normalize("NFD", text_str.lower())
+                c
+                for c in unicodedata.normalize("NFD", text_str.lower())
                 if unicodedata.category(c) != "Mn"
             )
 
@@ -297,14 +300,28 @@ Responda em português, destacando números e insights relevantes. Se não houve
         sql_results = None
 
         review_stems = [
-            "opinio", "comentar", "reclamac", "avaliac", "review", "nota",
-            "atraso", "qualidad", "gostou", "elogio", "critica", "atendimento",
-            "entrega", "satisfeit", "insatisfeit", "bom", "ruim", "pessim", "otim"
+            "opinio",
+            "comentar",
+            "reclamac",
+            "avaliac",
+            "review",
+            "nota",
+            "atraso",
+            "qualidad",
+            "gostou",
+            "elogio",
+            "critica",
+            "atendimento",
+            "entrega",
+            "satisfeit",
+            "insatisfeit",
+            "bom",
+            "ruim",
+            "pessim",
+            "otim",
         ]
 
-        product_stems = [
-            "produto", "categoria", "item", "semelhant", "recomendac", "marca", "peso"
-        ]
+        product_stems = ["produto", "categoria", "item", "semelhant", "recomendac", "marca", "peso"]
 
         is_review_intent = any(stem in norm_q for stem in review_stems)
         is_product_intent = any(stem in norm_q for stem in product_stems)
@@ -336,21 +353,27 @@ Responda em português, destacando números e insights relevantes. Se não houve
         if reviews_context:
             context_parts.append("--- AVALIAÇÕES DE CLIENTES (RAG VETORIAL) ---")
             for r in reviews_context:
-                score_str = f"Nota {r.get('score')}/5" if r.get('score') else "Sem nota"
-                comment_str = r.get('comment_text') or r.get('text_content')
+                score_str = f"Nota {r.get('score')}/5" if r.get("score") else "Sem nota"
+                comment_str = r.get("comment_text") or r.get("text_content")
                 context_parts.append(f"• {score_str}: {comment_str}")
 
         if products_context:
             context_parts.append("--- PRODUTOS ENCONTRADOS (BUSCA VETORIAL) ---")
             for p in products_context:
-                context_parts.append(f"• Produto {p.get('product_id')} ({p.get('category_name')}): {p.get('text_content')}")
+                context_parts.append(
+                    f"• Produto {p.get('product_id')} ({p.get('category_name')}): {p.get('text_content')}"
+                )
 
         if sql_results:
             context_parts.append("--- RESULTADOS ANALÍTICOS (BANCO DE DADOS / SQL) ---")
             context_parts.append(str(sql_results[:5]))
 
-        final_context = "\n".join(context_parts) if context_parts else "Nenhum contexto vetorial retornado."
-        formatted_answer = self.format_response(pergunta, sql or "Busca Semântica RAG Vetorial", final_context)
+        final_context = (
+            "\n".join(context_parts) if context_parts else "Nenhum contexto vetorial retornado."
+        )
+        formatted_answer = self.format_response(
+            pergunta, sql or "Busca Semântica RAG Vetorial", final_context
+        )
 
         return {
             "pergunta": pergunta,
@@ -361,7 +384,6 @@ Responda em português, destacando números e insights relevantes. Se não houve
             "reviews_evidences": reviews_context,
             "products_evidences": products_context,
         }
-
 
     def format_response(self, pergunta: str, sql: str, resultados: Any) -> str:
         """Formata a resposta em linguagem natural."""
@@ -380,4 +402,3 @@ Responda em português, destacando números e insights relevantes. Se não houve
         except Exception as e:
             logger.error(f"Erro ao formatar resposta: {str(e)}")
             return f"Resultados obtidos: {resultados}"
-

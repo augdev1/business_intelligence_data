@@ -78,4 +78,3 @@ class IAPerguntaResponse(BaseModel):
     dados: Optional[list] = None
     reviews_evidences: Optional[List[dict]] = None
     products_evidences: Optional[List[dict]] = None
-

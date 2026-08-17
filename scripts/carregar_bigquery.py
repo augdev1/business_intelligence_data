@@ -1,6 +1,6 @@
 """
 Script para carga dos dados do Olist no Google BigQuery Sandbox.
-Lê os arquivos CSV da pasta data/raw e realiza a carga em lote (batch) 
+Lê os arquivos CSV da pasta data/raw e realiza a carga em lote (batch)
 para o dataset 'olist_raw' no BigQuery.
 """
 
@@ -27,7 +27,9 @@ def get_bigquery_client():
 
     # Caso o caminho seja relativo à raiz
     if not os.path.isabs(key_path):
-        key_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), key_path)
+        key_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), key_path
+        )
 
     if not os.path.exists(key_path):
         raise FileNotFoundError(
@@ -54,7 +56,9 @@ def carregar_para_bigquery():
     print(f"[DATASET] Dataset 'olist_raw' garantido em: {dataset_id}")
 
     # 2. Extrair dados brutos da pasta data/raw
-    data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "raw")
+    data_dir = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "raw"
+    )
     print(f"[READ] Lendo CSVs da pasta: {data_dir}")
     raw_dfs = extract_olist_csvs(data_dir)
 
@@ -86,18 +90,17 @@ def carregar_para_bigquery():
         client.delete_table(table_ref, not_found_ok=True)
 
         # Configurar job de carga do BigQuery
-        job_config = bigquery.LoadJobConfig(
-            write_disposition="WRITE_TRUNCATE",
-            autodetect=True
-        )
+        job_config = bigquery.LoadJobConfig(write_disposition="WRITE_TRUNCATE", autodetect=True)
 
         print(f"[LOAD] Carregando {len(df):,} linhas na tabela BigQuery '{table_ref}'...")
-        
+
         job = client.load_table_from_dataframe(df, table_ref, job_config=job_config)
         job.result()  # Aguarda a conclusão do job de carga
 
         table = client.get_table(table_ref)
-        print(f"[SUCCESS] Tabela '{table_name}' criada com sucesso! Total no BigQuery: {table.num_rows:,} linhas ({table.num_bytes / (1024*1024):.2f} MB)")
+        print(
+            f"[SUCCESS] Tabela '{table_name}' criada com sucesso! Total no BigQuery: {table.num_rows:,} linhas ({table.num_bytes / (1024*1024):.2f} MB)"
+        )
 
     print("\n[FINISH] Todas as tabelas foram carregadas com sucesso no BigQuery Sandbox!")
 

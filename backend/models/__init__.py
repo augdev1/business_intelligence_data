@@ -19,4 +19,3 @@ __all__ = [
     "ProductEmbedding",
     "ReviewEmbedding",
 ]
-

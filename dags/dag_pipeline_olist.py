@@ -74,4 +74,9 @@ with DAG(
     )
 
     # Ordem de execução do pipeline (Cargas para Postgres e BigQuery rodam em paralelo)
-    task_checar_arquivos >> [task_ingestao_postgres, task_ingestao_bigquery] >> task_dbt_run >> task_dbt_test
+    (
+        task_checar_arquivos
+        >> [task_ingestao_postgres, task_ingestao_bigquery]
+        >> task_dbt_run
+        >> task_dbt_test
+    )

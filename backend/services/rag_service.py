@@ -35,7 +35,7 @@ class RAGService:
         """
         if self.chain:
             return self.chain.rag_hybrid_query(pergunta, db)
-        
+
         # Fallback sem LLM ativo
         return {
             "pergunta": pergunta,
@@ -47,7 +47,9 @@ class RAGService:
             "products_evidences": [],
         }
 
-    def search_reviews_semantic(self, query: str, db: Session, limit: int = 5) -> List[Dict[str, Any]]:
+    def search_reviews_semantic(
+        self, query: str, db: Session, limit: int = 5
+    ) -> List[Dict[str, Any]]:
         """
         Busca semântica dedicada em avaliações de clientes.
         """
@@ -55,7 +57,9 @@ class RAGService:
             return self.chain.vector_review_search(query, db, limit=limit)
         return []
 
-    def search_products_semantic(self, query: str, db: Session, limit: int = 5) -> List[Dict[str, Any]]:
+    def search_products_semantic(
+        self, query: str, db: Session, limit: int = 5
+    ) -> List[Dict[str, Any]]:
         """
         Busca semântica dedicada no catálogo de produtos.
         """

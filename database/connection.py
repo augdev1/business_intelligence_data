@@ -11,15 +11,22 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 
 # URL padrão do banco de dados
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://vendas_user:vendas_password@localhost:5432/vendas_db")
+DATABASE_URL = os.getenv(
+    "DATABASE_URL", "postgresql://vendas_user:vendas_password@localhost:5432/vendas_db"
+)
 
 if DATABASE_URL.startswith("sqlite"):
     engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 else:
-    DATABASE_URL_PG = DATABASE_URL.replace("postgresql://", "postgresql+pg8000://") if "postgresql+pg8000" not in DATABASE_URL else DATABASE_URL
+    DATABASE_URL_PG = (
+        DATABASE_URL.replace("postgresql://", "postgresql+pg8000://")
+        if "postgresql+pg8000" not in DATABASE_URL
+        else DATABASE_URL
+    )
     try:
         import socket
         from urllib.parse import urlparse
+
         parsed = urlparse(DATABASE_URL)
         host = parsed.hostname or os.getenv("POSTGRES_HOST", "localhost")
         port = parsed.port or int(os.getenv("POSTGRES_PORT", 5432))
@@ -53,18 +60,47 @@ def get_db():
 
 def init_db():
     """Inicializa o banco de dados criando todas as tabelas e índices de alta performance."""
-    from backend.models import Customer, Product, Order, OrderItem, OrderPayment, ProductEmbedding, ReviewEmbedding
+    from backend.models import (
+        Customer,
+        Product,
+        Order,
+        OrderItem,
+        OrderPayment,
+        ProductEmbedding,
+        ReviewEmbedding,
+    )
     from sqlalchemy import text
 
     Base.metadata.create_all(bind=engine)
-    
+
     # Cria índices otimizados em SQL puro para acelerar agrupamentos e joins
     with engine.begin() as conn:
-        conn.execute(text('CREATE INDEX IF NOT EXISTS idx_customers_state ON customers(customer_state);'))
-        conn.execute(text('CREATE INDEX IF NOT EXISTS idx_orders_customer_id ON orders(customer_id);'))
-        conn.execute(text('CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);'))
-        conn.execute(text('CREATE INDEX IF NOT EXISTS idx_order_items_product_id ON order_items(product_id);'))
-        conn.execute(text('CREATE INDEX IF NOT EXISTS idx_orders_purchase_time ON orders(order_purchase_timestamp);'))
-        conn.execute(text('CREATE INDEX IF NOT EXISTS idx_order_payments_order_id ON order_payments(order_id);'))
-        conn.execute(text('CREATE INDEX IF NOT EXISTS idx_order_payments_type ON order_payments(payment_type);'))
-
+        conn.execute(
+            text("CREATE INDEX IF NOT EXISTS idx_customers_state ON customers(customer_state);")
+        )
+        conn.execute(
+            text("CREATE INDEX IF NOT EXISTS idx_orders_customer_id ON orders(customer_id);")
+        )
+        conn.execute(
+            text("CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);")
+        )
+        conn.execute(
+            text(
+                "CREATE INDEX IF NOT EXISTS idx_order_items_product_id ON order_items(product_id);"
+            )
+        )
+        conn.execute(
+            text(
+                "CREATE INDEX IF NOT EXISTS idx_orders_purchase_time ON orders(order_purchase_timestamp);"
+            )
+        )
+        conn.execute(
+            text(
+                "CREATE INDEX IF NOT EXISTS idx_order_payments_order_id ON order_payments(order_id);"
+            )
+        )
+        conn.execute(
+            text(
+                "CREATE INDEX IF NOT EXISTS idx_order_payments_type ON order_payments(payment_type);"
+            )
+        )

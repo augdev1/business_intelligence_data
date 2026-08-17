@@ -23,6 +23,7 @@ class IAService:
         self.db = db
         self.repository = KPIRepository(db)
         from dotenv import load_dotenv, find_dotenv
+
         load_dotenv(find_dotenv(usecwd=True), override=True)
         self.ai_provider = os.getenv("AI_PROVIDER", "groq")
 
@@ -77,4 +78,3 @@ class IAService:
                 "reviews_evidences": [],
                 "products_evidences": [],
             }
-

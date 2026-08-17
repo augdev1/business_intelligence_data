@@ -14,7 +14,6 @@ from backend.models.order_item import OrderItem
 from backend.models.order_payment import OrderPayment
 from backend.models.product import Product
 
-
 PRODUCT_NAME_MAP = {
     "bb50f2e236e5eea0100680137654686c": "Perfume Importado Luxo",
     "6cdd53843498f92890544667809f1595": "Secador Cabelo Turbo",

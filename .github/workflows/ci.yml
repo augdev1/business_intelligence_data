@@ -43,10 +43,10 @@ jobs:
 
       - name: Run Code Formatting Check (Black)
         run: |
-          black --check .
+          python -m black --check .
 
       - name: Run Test Suite (Pytest)
         env:
           DATABASE_URL: postgresql://vendas_user:vendas_password@localhost:5432/vendas_db
         run: |
-          pytest -v
+          python -m pytest -v

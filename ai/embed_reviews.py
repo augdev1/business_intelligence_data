@@ -40,8 +40,10 @@ def run_review_embedding_pipeline(
     df = pd.read_csv(csv_path)
 
     # Filtrar apenas avaliações que contêm comentário em texto
-    df_with_comments = df[df["review_comment_message"].notna() & (df["review_comment_message"].str.strip() != "")].copy()
-    
+    df_with_comments = df[
+        df["review_comment_message"].notna() & (df["review_comment_message"].str.strip() != "")
+    ].copy()
+
     total_found = len(df_with_comments)
     logger.info(f"Total de reviews com comentário em texto: {total_found}")
 
@@ -66,7 +68,11 @@ def run_review_embedding_pipeline(
                 review_id = str(row.get("review_id", ""))
                 order_id = str(row.get("order_id", ""))
                 score = int(row.get("review_score", 0)) if pd.notna(row.get("review_score")) else 0
-                title = str(row.get("review_comment_title", "")) if pd.notna(row.get("review_comment_title")) else ""
+                title = (
+                    str(row.get("review_comment_title", ""))
+                    if pd.notna(row.get("review_comment_title"))
+                    else ""
+                )
                 comment = str(row.get("review_comment_message", "")).strip()
 
                 if not review_id or not comment:
@@ -98,7 +104,9 @@ def run_review_embedding_pipeline(
             db.commit()
             logger.info(f"Progresso de embeddings de reviews: {count}/{len(records)} concluídos.")
 
-        logger.info(f"Pipeline de embeddings de reviews concluído com sucesso! Total: {count} processados.")
+        logger.info(
+            f"Pipeline de embeddings de reviews concluído com sucesso! Total: {count} processados."
+        )
     except Exception as e:
         db.rollback()
         logger.error(f"Erro no pipeline de embeddings de reviews: {e}")

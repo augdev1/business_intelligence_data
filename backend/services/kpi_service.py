@@ -47,13 +47,17 @@ class KPIService:
         global _kpi_cache, _kpi_cache_time
 
         now = time.time()
-        if not force_refresh and _kpi_cache is not None and (now - _kpi_cache_time) < CACHE_TTL_SECONDS:
+        if (
+            not force_refresh
+            and _kpi_cache is not None
+            and (now - _kpi_cache_time) < CACHE_TTL_SECONDS
+        ):
             logger.info("Retornando KPIs do cache em memória (Instantâneo)")
             return _kpi_cache
 
         logger.info("Calculando todos os KPIs no banco de dados...")
         t0 = time.time()
-        
+
         result = {
             "receita_total": self.repository.get_receita_total(),
             "numero_pedidos": self.repository.get_numero_pedidos(),
@@ -69,7 +73,7 @@ class KPIService:
 
         _kpi_cache = result
         _kpi_cache_time = now
-        
+
         logger.info(f"KPIs calculados e armazenados em cache em {time.time() - t0:.2f}s")
         return result
 

@@ -21,7 +21,11 @@ def generate_embedding(text_str: str) -> List[float]:
     ou fallback determinístico base de teste caso não haja API key.
     """
     openai_key = os.getenv("OPENAI_API_KEY")
-    if openai_key and openai_key != "your_openai_api_key_here" and not openai_key.startswith("your_"):
+    if (
+        openai_key
+        and openai_key != "your_openai_api_key_here"
+        and not openai_key.startswith("your_")
+    ):
         try:
             from langchain_openai import OpenAIEmbeddings
 

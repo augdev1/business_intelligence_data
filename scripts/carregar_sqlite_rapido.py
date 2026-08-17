@@ -40,7 +40,7 @@ def main():
                 print(f"  {name}: não encontrado, pulando")
                 continue
             df, _errs, _warns = transformed[name]
-            
+
             df.to_sql(name, con=conn, if_exists="append", index=False)
             n = len(df)
             total += n

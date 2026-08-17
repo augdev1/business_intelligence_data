@@ -1,12 +1,14 @@
 """
 Modelo SQLAlchemy para a tabela review_embeddings usando pgvector com fallback SQLite.
 """
+
 from sqlalchemy import Column, String, Text, Integer, DateTime, JSON
 from sqlalchemy.sql import func
 from database.connection import Base
 
 try:
     from pgvector.sqlalchemy import Vector
+
     VectorType = Vector(1536)
 except ImportError:
     VectorType = JSON
@@ -25,6 +27,7 @@ class ReviewEmbedding(Base):
         text_content: Representação em texto enriquecida para geração de embedding
         embedding: Vetor de embedding de 1536 dimensões
     """
+
     __tablename__ = "review_embeddings"
 
     review_id = Column(String(50), primary_key=True, index=True)

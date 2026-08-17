@@ -36,4 +36,3 @@ def rag_search(request: IAPerguntaRequest, db: Session = Depends(get_db)):
     """
     service = IAService(db)
     return service.perguntar(request.pergunta)
-
