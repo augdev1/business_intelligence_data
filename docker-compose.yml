@@ -33,6 +33,8 @@ services:
       POSTGRES_USER: vendas_user
       POSTGRES_PASSWORD: vendas_password
       POSTGRES_DB: vendas_db
+      GCP_PROJECT_ID: ${GCP_PROJECT_ID:-bidataanalytics-505811}
+      GOOGLE_APPLICATION_CREDENTIALS: /app/secrets/gcp-key.json
     ports:
       - "8000:8000"
     depends_on:
@@ -41,6 +43,7 @@ services:
     volumes:
       - ./data:/app/data
       - ./dbt_olist:/app/dbt_olist
+      - ./secrets/gcp-key.json:/app/secrets/gcp-key.json:ro
 
   # Frontend React (Vite + Nginx)
   frontend:
@@ -97,16 +100,21 @@ services:
       AI_PROVIDER: ${AI_PROVIDER:-groq}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GCP_PROJECT_ID: ${GCP_PROJECT_ID:-bidataanalytics-505811}
+      GOOGLE_APPLICATION_CREDENTIALS: /app/secrets/gcp-key.json
     depends_on:
       db:
         condition: service_healthy
     volumes:
       - ./data:/app/data
       - ./dbt_olist:/app/dbt_olist
+      - ./secrets/gcp-key.json:/app/secrets/gcp-key.json:ro
     command: >
       sh -c "
         echo '🚀 Inicializando banco e carregando dados brutos do Olist...' &&
         python scripts/carregar_rapido.py &&
+        echo '☁️ Carregando dados brutos no BigQuery Sandbox...' &&
+        python scripts/carregar_bigquery.py &&
         echo '📊 Executando transformações dbt (Star Schema)...' &&
         cd /app/dbt_olist && dbt run --profiles-dir . && cd /app &&
         echo '🧠 Gerando embeddings vetoriais (pgvector)...' &&

@@ -1,6 +1,6 @@
 """
 DAG do Apache Airflow para Orquestração do Pipeline Olist E-Commerce.
-Fluxo: Checagem de Arquivos -> Ingestão Bronze (Raw) -> dbt Run -> dbt Test.
+Fluxo: Checagem de Arquivos -> Ingestão Híbrida (PostgreSQL + GCP BigQuery Sandbox) -> dbt Run -> dbt Test.
 """
 
 import os
@@ -37,10 +37,10 @@ def checar_arquivos_raw():
 with DAG(
     "pipeline_olist_ecommerce",
     default_args=default_args,
-    description="Pipeline Completo ELT: Carga Raw + dbt Transform + dbt Test",
+    description="Pipeline Completo ELT: Carga Raw + GCP BigQuery Sandbox + dbt Transform + dbt Test",
     schedule_interval="@daily",
     catchup=False,
-    tags=["olist", "elt", "dbt", "postgres"],
+    tags=["olist", "elt", "dbt", "postgres", "bigquery", "gcp"],
 ) as dag:
 
     # 1. Checagem dos arquivos de entrada
@@ -49,10 +49,16 @@ with DAG(
         python_callable=checar_arquivos_raw,
     )
 
-    # 2. Ingestão dos dados brutos no PostgreSQL (Camada Bronze / Raw)
-    task_ingestao_raw = BashOperator(
-        task_id="task_ingestao_raw",
+    # 2a. Ingestão dos dados brutos no PostgreSQL (Camada Bronze / Raw Local)
+    task_ingestao_postgres = BashOperator(
+        task_id="task_ingestao_postgres",
         bash_command="python /app/scripts/carregar_rapido.py || python scripts/carregar_rapido.py",
+    )
+
+    # 2b. Ingestão e sincronização para o Cloud Data Warehouse (Google BigQuery Sandbox)
+    task_ingestao_bigquery = BashOperator(
+        task_id="task_ingestao_bigquery",
+        bash_command="python /app/scripts/carregar_bigquery.py || python scripts/carregar_bigquery.py",
     )
 
     # 3. Execução das transformações dbt (Camada Prata e Ouro)
@@ -67,5 +73,5 @@ with DAG(
         bash_command="cd /app/dbt_olist && dbt test --profiles-dir . || cd dbt_olist && dbt test --profiles-dir .",
     )
 
-    # Ordem de execução do pipeline
-    task_checar_arquivos >> task_ingestao_raw >> task_dbt_run >> task_dbt_test
+    # Ordem de execução do pipeline (Cargas para Postgres e BigQuery rodam em paralelo)
+    task_checar_arquivos >> [task_ingestao_postgres, task_ingestao_bigquery] >> task_dbt_run >> task_dbt_test

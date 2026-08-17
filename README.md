@@ -1,6 +1,7 @@
 # 📊 Enterprise Business Intelligence, Data Engineering & AI Platform (Olist E-Commerce)
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Google BigQuery](https://img.shields.io/badge/Google_BigQuery-Sandbox-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white)](https://cloud.google.com/bigquery)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -12,37 +13,42 @@
 
 Plataforma profissional de **Engenharia de Dados, Business Intelligence e Inteligência Artificial**, projetada para o ecossistema de e-commerce brasileiro com base no dataset real da **Olist** (+448 mil registros).
 
-O sistema implementa as melhores práticas de mercado: **Data Transformation com dbt (Star Schema)**, **Orquestração com Apache Airflow**, **Conteinerização Completa com Docker Compose**, **Busca Semântica Híbrida via pgvector + LangChain**, **API RESTful assíncrona com FastAPI**, **Dashboard React 19 em Dark Mode** e **Esteira CI/CD automatizada com GitHub Actions**.
+O sistema implementa as melhores práticas do mercado de dados: **Cloud Data Warehouse no Google BigQuery Sandbox**, **Data Transformation com dbt (Star Schema)**, **Orquestração com Apache Airflow**, **Conteinerização Completa com Docker Compose**, **Busca Semântica Híbrida via pgvector + LangChain**, **API RESTful assíncrona com FastAPI**, **Dashboard React 19 em Dark Mode** e **Esteira CI/CD automatizada com GitHub Actions**.
 
 ---
 
-## 🌟 Os 5 Pilares de Maturidade Técnica
+## 🌟 Os 6 Pilares de Maturidade Técnica
 
-### 1. 🔶 Transformação de Dados & Modelagem Dimensional com dbt
+### 1. ☁️ Cloud Data Warehouse com Google BigQuery Sandbox
+- **Carga em Lote (Batch ETL):** Ingestão automatizada via Python (`google-cloud-bigquery`) transferindo +448 mil registros da Olist para o dataset `olist_raw` no BigQuery Sandbox.
+- **Arquitetura Híbrida Operacional/Analítica:** Separação completa entre a camada operacional de baixa latência e RAG (PostgreSQL 16 + `pgvector`) e a camada analítica de alta concorrência em nuvem (BigQuery Sandbox).
+- **Sem Custos & Autenticação Segura:** Implementação 100% gratuita utilizando a cota Sandbox do GCP com autenticação via Service Account JSON key (`secrets/gcp-key.json`).
+
+### 2. 🔶 Transformação de Dados & Modelagem Dimensional com dbt
 - **Arquitetura Medallion**: Dados brutos na camada Bronze (`public`), visões higienizadas em Staging Prata (`stg_customers`, `stg_orders`, `stg_order_items`, `stg_order_payments`, `stg_products`) e modelo **Star Schema** na camada Gold (`dim_customers`, `dim_products`, `fct_orders`).
 - **Data Quality Contracts (`schema.yml`)**: Testes automáticos validando integridade referencial (`relationships`), unicidade (`unique`) e obrigatoriedade (`not_null`).
 
-### 2. 🐳 Conteinerização Enterprise com Docker Compose
+### 3. 🐳 Conteinerização Enterprise com Docker Compose
 - **Orquestração Automatizada (`docker compose up --build -d`)**:
   - `db`: PostgreSQL 16 com a extensão **`pgvector`** pré-instalada (`pgvector/pgvector:pg16`).
-  - `backend`: API REST FastAPI com suporte a conexões assíncronas e fallback DB.
+  - `backend`: API REST FastAPI com suporte a conexões assíncronas e integração GCP BigQuery.
   - `frontend`: Dashboard SPA React 19 + Vite servido via Nginx otimizado.
   - `airflow`: Servidor e Scheduler oficial do Apache Airflow (v2.9.3) com DAGs integradas.
-  - `init-data`: Job automatizado e idempotente de carga inicial, transformações dbt (Star Schema) e geração de embeddings vetoriais (`pgvector`).
+  - `init-data`: Job automatizado e idempotente de carga no PostgreSQL e no BigQuery Sandbox, transformações dbt (Star Schema) e geração de embeddings vetoriais (`pgvector`).
 
-### 3. 🌀 Orquestração de Pipelines com Apache Airflow
+### 4. 🌀 Orquestração de Pipelines com Apache Airflow
 - **DAG Automatizada (`dag_pipeline_olist.py`)**:
   1. `task_checar_arquivos`: Valida presença de CSVs brutos em `data/raw`.
-  2. `task_ingestao_raw`: Ingestão bulk via script Python na camada Bronze.
+  2. `task_ingestao_raw`: Ingestão bulk em PostgreSQL e sync para o BigQuery Sandbox.
   3. `task_dbt_run`: Construção das dimensões e fatos via dbt.
   4. `task_dbt_test`: Execução dos testes de qualidade de dados.
 
-### 4. 🧠 AI Híbrida & RAG: Text-to-SQL + Busca Vetorial de Reviews & Produtos (`pgvector` + LangChain)
+### 5. 🧠 AI Híbrida & RAG: Text-to-SQL + Busca Vetorial (`pgvector` + LangChain)
 - **Engine Vetorial Dupla**: Armazenamento de embeddings de 1536 dimensões nas tabelas `product_embeddings` (catálogo) e `review_embeddings` (análise de comentários de clientes).
 - **RAG Híbrido Conversacional**: LangChain LCEL combinando geração de SQL dinâmico (Text-to-SQL via Groq Llama-3.3-70b / OpenAI) e busca por similaridade semântica de cosseno (`ORDER BY embedding <=> :vector`).
 - **Recuperação de Evidências no Frontend**: Exibição de trechos de avaliações reais de clientes com notas (1 a 5 ⭐) e porcentagem de similaridade vetorial diretamente no Dashboard React 19.
 
-### 5. ⚙️ Esteira CI/CD Automatizada com GitHub Actions
+### 6. ⚙️ Esteira CI/CD Automatizada com GitHub Actions
 - **Workflow em `.github/workflows/ci.yml`**: Executa a cada `push` ou `pull_request` na branch `main`:
   - Linter e checagem de formatação Python com `black --check`.
   - Subida automática de container de banco PostgreSQL `pgvector`.
@@ -55,7 +61,9 @@ O sistema implementa as melhores práticas de mercado: **Data Transformation com
 ```mermaid
 graph TD
     A[Dataset Raw Olist CSV/ZIP] -->|Airflow DAG| B[Task 1: Checar & Ingerir]
-    B -->|Bulk Insert| C[(PostgreSQL 16 + pgvector)]
+    
+    B -->|Bulk Insert Local| C[(PostgreSQL 16 + pgvector)]
+    B -->|ETL Python google-cloud-bigquery| DW[(Google BigQuery Sandbox)]
     
     C -->|Task 2: dbt run| D[dbt Staging Models: stg_*]
     D -->|Star Schema Transformation| E[dbt Marts: dim_customers, dim_products, fct_orders]
@@ -131,7 +139,7 @@ graph TD
 
 ## 📅 Período dos Dados & Integridade da Carga
 
-Os dados inseridos no banco de dados cobrem o período de **setembro de 2016 a outubro de 2018**.
+Os dados inseridos cobrem o período de **setembro de 2016 a outubro de 2018**.
 
 ### Distribuição Temporal dos Pedidos
 * **Ano 2016:** 329 pedidos (início das operações em setembro de 2016)
@@ -139,31 +147,38 @@ Os dados inseridos no banco de dados cobrem o período de **setembro de 2016 a o
 * **Ano 2018:** 54.011 pedidos (até outubro de 2018)
 * **Total:** **99.441 pedidos** (Data inicial: `04/09/2016` | Data final: `17/10/2018`)
 
-### Tabela de Auditoria de Integridade (Carga 1:1 dos CSVs originais)
+### Tabela de Auditoria de Integridade (Carga 1:1 para PostgreSQL e BigQuery Sandbox)
 
-| Tabela no Banco | Arquivo CSV de Origem | Linhas Ingeridas | Linhas no CSV | Status de Integridade |
+| Tabela de Origem | Arquivo CSV | Linhas em PostgreSQL | Linhas no BigQuery Sandbox | Status de Integridade |
 | :--- | :--- | :--- | :--- | :--- |
-| `customers` | `olist_customers_dataset.csv` | **99.441** | 99.441 | ✅ 100% Integra |
-| `products` | `olist_products_dataset.csv` | **32.951** | 32.951 | ✅ 100% Integra |
-| `orders` | `olist_orders_dataset.csv` | **99.441** | 99.441 | ✅ 100% Integra |
-| `order_items` | `olist_order_items_dataset.csv` | **112.650** | 112.650 | ✅ 100% Integra |
-| `order_payments` | `olist_order_payments_dataset.csv` | **103.886** | 103.886 | ✅ 100% Integra |
+| `customers` | `olist_customers_dataset.csv` | **99.441** | **99.441** | ✅ 100% Íntegra |
+| `products` | `olist_products_dataset.csv` | **32.951** | **32.951** | ✅ 100% Íntegra |
+| `orders` | `olist_orders_dataset.csv` | **99.441** | **99.441** | ✅ 100% Íntegra |
+| `order_items` | `olist_order_items_dataset.csv` | **112.650** | **112.650** | ✅ 100% Íntegra |
+| `order_payments` | `olist_order_payments_dataset.csv` | **103.886** | **103.886** | ✅ 100% Íntegra |
 
 ---
 
 ## 🚀 Como Executar o Projeto Localmente
 
-### Opção A: Execução Conteinerizada Única (Recomendada)
-Para subir todos os serviços (PostgreSQL 16 com `pgvector`, FastAPI Backend, Frontend React e Apache Airflow):
+### Opção A: Execução Conteinerizada Única com Docker (Recomendada)
 
-```bash
-# Clone o repositório
-git clone https://github.com/augdev1/business_intelligence.git
-cd business_intelligence
+1. **Configuração de Variáveis de Ambiente:**
+   Crie o seu arquivo `.env` com base no `.env.example`:
+   ```bash
+   cp .env.example .env
+   ```
 
-# Suba a infraestrutura completa
-docker compose up --build -d
-```
+2. **Adicione a Chave JSON do GCP (BigQuery Sandbox):**
+   Cole a sua chave Service Account em `secrets/gcp-key.json`:
+   ```text
+   secrets/gcp-key.json
+   ```
+
+3. **Suba a Infraestrutura Completa:**
+   ```bash
+   docker compose up --build -d
+   ```
 
 #### Acessos aos Serviços Conteinerizados:
 - 📍 **Dashboard React**: [http://localhost:3000](http://localhost:3000)
@@ -179,24 +194,30 @@ docker compose up --build -d
 docker run -d --name vendas_db -p 5432:5432 -e POSTGRES_USER=vendas_user -e POSTGRES_PASSWORD=vendas_password -e POSTGRES_DB=vendas_db pgvector/pgvector:pg16
 ```
 
-#### 2. Povoar Camada Raw e Executar dbt
+#### 2. Executar ETL do BigQuery Sandbox e PostgreSQL Local
 ```bash
-# Povoar banco relacional
-python scripts/carregar_sqlite_rapido.py
+# Ingestão para o BigQuery Sandbox em nuvem
+python scripts/carregar_bigquery.py
 
-# Executar transformações e testes dbt
+# Ingestão para o PostgreSQL local
+python scripts/carregar_rapido.py
+```
+
+#### 3. Executar transformações e testes dbt
+```bash
 cd dbt_olist
 dbt run --profiles-dir .
 dbt test --profiles-dir .
 cd ..
 ```
 
-#### 3. Gerar Embeddings Vetoriais
+#### 4. Gerar Embeddings Vetoriais
 ```bash
 python -m ai.embed_products
+python -m ai.embed_reviews
 ```
 
-#### 4. Executar Testes & Checagem de Código
+#### 5. Executar Testes & Checagem de Código
 ```bash
 black --check .
 python -m pytest -v
@@ -223,7 +244,7 @@ business_intelligence/
 │   ├── repositories/                  # Repository Pattern (Acesso a dados)
 │   └── services/                      # Camada de Serviços com In-Memory Cache (2.9ms TTL)
 ├── dags/
-│   └── dag_pipeline_olist.py          # DAG Airflow: Checagem -> Bronze -> dbt run -> dbt test
+│   └── dag_pipeline_olist.py          # DAG Airflow: Checagem -> Bronze/BigQuery -> dbt run -> dbt test
 ├── data/
 │   └── raw/                           # CSVs do Olist E-Commerce
 ├── database/
@@ -239,13 +260,16 @@ business_intelligence/
 │   ├── Dockerfile.backend             # Container FastAPI / Python
 │   ├── Dockerfile.frontend            # Container React 19 + Nginx
 │   └── init_pgvector.sql              # Script SQL para ativação do pgvector
-├── frontend-react/                    # Dashboard React 19 + Vite + Tailwind v4 + Recharts
+├── secrets/                           # Credenciais GCP (Ignorado no Git)
+│   └── gcp-key.json                   # Chave Service Account do BigQuery Sandbox
 ├── scripts/
-│   └── carregar_sqlite_rapido.py      # Script de ingestão bulk na camada Bronze
+│   ├── carregar_bigquery.py           # Script de carga batch para o BigQuery Sandbox (GCP)
+│   └── carregar_rapido.py             # Script de ingestão bulk no PostgreSQL
 ├── tests/                             # Suíte de testes unitários e de integração
-├── docker-compose.yml                 # Orquestração completa de 4 serviços
+├── .env.example                       # Exemplo de variáveis de ambiente do projeto
+├── docker-compose.yml                 # Orquestração completa de serviços
 ├── pyproject.toml                     # Configuração de ferramentas Python (Black, Pytest)
-├── requirements.txt                   # Dependências Python do projeto
+├── requirements.txt                   # Dependências Python (BigQuery, FastAPI, dbt, LangChain)
 └── README.md                          # Documentação técnica do repositório
 ```
 
@@ -258,5 +282,5 @@ Distribuído sob a licença **MIT**. Veja `LICENSE` para mais informações.
 ---
 
 <p align="center">
-  <b>Desenvolvido com Python, dbt, Apache Airflow, PostgreSQL pgvector, FastAPI, React 19 & LangChain</b>
+  <b>Desenvolvido com Python, Google BigQuery Sandbox, dbt, Apache Airflow, PostgreSQL pgvector, FastAPI, React 19 & LangChain</b>
 </p>
